@@ -7,11 +7,10 @@ using System.IO;
 
 namespace Waves
 {
-        public class Program
+    public class Program
     {
         public static void Main()
         {
-
             Dictionary<string, string> waves = new()
             {
                 { "Sinus Bradycardia", @"              x                                          x                                          x                                          x                                          x
