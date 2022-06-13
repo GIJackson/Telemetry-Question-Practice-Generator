@@ -67,60 +67,85 @@ x───xxx───x───x───x───x───xxx───x─�
            x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x
             x       x             x       x             x       x             x       x             x       x             x       x             x       x             x       x             x       x             x
                     x             x       x                     x                     x                     x                     x                     x                     x                     x
-                    x                     x                     x                     x                     x                     x                     x                     x                     x" }
+                    x                     x                     x                     x                     x                     x                     x                     x                     x" },
+                {"a-fib", "a-fib"},
+                {"1st degree block", "1st degree block"},
+                {"2nd degree block", "2nd degree block"},
+                {"vtach", "vtach"},
+                {"asystole", "asystole"},
+                {"vfib", "vfib"}
             };
 
-
-
-            Console.WriteLine("Welcome to Telemetry Question Generator! Press enter to continue.");
-            Console.ReadLine();
-            Console.WriteLine("Would you like to begin your test? Enter 1 to begin, enter 2 for more options (it just makes you quit right now).");
-
-            int origWidth, width;
-            int origHeight, height;
-
-            origWidth = Console.WindowWidth;
-            origHeight = Console.WindowHeight;
-
-            width = origWidth + 100;
-            height = origHeight;
-
-            string begin;
-            while ((begin = Console.ReadLine()) != "2")
+            while (true)
             {
-                Console.WriteLine(begin);
+                Console.WriteLine("Welcome to Telemetry Question Generator! \n\nPress any key to continue.");
+                Console.ReadKey();
+                Console.WriteLine();
+                Console.WriteLine("Would you like to begin your test? \n\nEnter 1 to begin, enter 2 to quit.");
+                string begin = Console.ReadLine();
+
                 if (begin == "1")
                 {
-                    Console.SetWindowSize(width, height);
+                    Console.SetWindowSize(220, 40);
 
-                    List<string> keyList = new(waves.Keys);
-                    Random rand = new();
-                    string randomKey = keyList[rand.Next(keyList.Count)];
-                    Console.WriteLine(waves[randomKey]);
+                    List<string> randomKey = new(waves.Keys);
 
-                    Console.WriteLine("What rhythm does this represent?");
-
-                    var answer = Console.ReadLine();
-                    if (answer == randomKey)
+                    var _random = new Random();
+                    var randomKeyList = randomKey.OrderBy(item => _random.Next());
+                    var questionKey = randomKeyList.ToArray();
+                    for (int i = 0; i < questionKey.Length; i++)
                     {
-                        Console.WriteLine("That is correct! Please press 2 to exit");
+                        Console.WriteLine(waves[questionKey[i]]);
+                        Console.WriteLine("What rhythm does this represent?");
+                        var answer = questionKey[i];
+                        var userAnswer = Console.ReadLine();
+                        if(i == (questionKey.Length - 1) && userAnswer.ToUpper() == answer.ToUpper())
+                        {
+                            Console.WriteLine("Correct!\n\nYou have completed the last question, congratulations!\n\n");
+                            Console.WriteLine("Enter any key to return to the main menu.");
+                            break;
+                        }
+                        else if (i == (questionKey.Length - 1) && userAnswer.ToUpper() != answer.ToUpper())
+                        {
+                            Console.WriteLine("That was not correct.\n\nYou have completed the last question, congratulations!\n\n");
+                            Console.WriteLine("Enter any key to return to the main menu.");
+                            break;
+                        }
+                        else if (userAnswer.ToUpper() == answer.ToUpper())
+                        {
+                            Console.WriteLine("Correct!");
+                            Console.WriteLine("Enter any key to continue or press 2 to quit.");
+                            if (Console.ReadLine() == "2")
+                            {
+                                break;
+                            }
+                        }
+                        else if (userAnswer.ToUpper() != answer.ToUpper())
+                        {
+                            Console.WriteLine("That was not correct. Enter any key to continue or press 2 to to return to the main menu.");
+                            if (Console.ReadLine() == "2")
+                            {
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("That was not correct. Enter any key to continue or press 2 to to return to the main menu.");
+                            if (Console.ReadLine() == "2")
+                            {
+                                break;
+                            }
+                        }
                     }
-                    else
-                    {
-                        Console.WriteLine("That was incorrect. Please press 1 to try again.");
-                    }
-
                 }
                 else if (begin == "2")
                 {
                     Environment.Exit(0);
                 }
-
                 else
                 {
                     Console.WriteLine("That is not an option, please press enter to continue");
-                    Console.ReadLine();
-                    Console.WriteLine("Would you like to begin your test? Enter 1 to begin, enter 2 for more options (it just makes you quit right now).");
+                    Console.ReadKey();
                 }
             }
         }
