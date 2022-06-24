@@ -310,7 +310,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
             while (continueQuiz == true)
             {
                 TitleMenu.WriteLogo();
-                Console.WriteLine("Would you like to begin your test? \n\nEnter 1 to begin, enter 2 to quit.");
+                Console.WriteLine("Would you like to begin your test? \n\nEnter 1 to begin, enter 2 to quit, enter 3 to see answer key.");
                 string? begin = Console.ReadLine();
 
                 if (begin == "1")
@@ -405,13 +405,24 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                 }
                 else if (begin == "3")
                 {
+                    Console.CursorVisible = false;
+                    Console.Clear();
+                    Console.WriteLine("Below are the expected answers to the waveforms you will be asked to name during the test.\n\nPlease utilize the scroll bars to the top and right of your window to view the waveforms.\n\n[Warning]: Adjusting the window height or width will distort the images.\nReturning to the title menu will resolve the distortions.\n ");
+                    Console.WriteLine("(Press any key to return to the Title Menu...)\n");
                     foreach (KeyValuePair<string, string> kvp in waves)
                     {
-                        Console.SetBufferSize(240, 240);
-                        Console.WriteLine("Waveform: {1}\n{0}\n", kvp.Key, kvp.Value);
-                        Console.SetCursorPosition(0, 0);
-                        Console.ReadKey();
+                        Console.SetBufferSize(240, 350);
+                        Console.WriteLine($"Waveform: "+ kvp.Value);
+                        Console.WriteLine(kvp.Key);
+                        //Console.SetCursorPosition(0, 0);
+                        
                     };
+                    Console.WriteLine("(Press any key to return to the Title Menu...)");
+                    Console.SetCursorPosition(0,0);
+                    Console.Read();
+                    Console.Clear();
+                    Console.CursorVisible = true;
+
                 }
                 else if (begin == "2")
                 {

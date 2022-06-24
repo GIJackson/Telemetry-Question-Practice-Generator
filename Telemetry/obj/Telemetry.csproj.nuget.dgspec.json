@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Guillermo Jackson\\source\\repos\\Telemetry\\Telemetry-Question-Practice-Generator\\Telemetry\\Telemetry.csproj": {}
+    "C:\\Users\\gijca\\source\\repos\\Telemetry-Question-Practice-Generator\\Telemetry\\Telemetry.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Guillermo Jackson\\source\\repos\\Telemetry\\Telemetry-Question-Practice-Generator\\Telemetry\\Telemetry.csproj": {
+    "C:\\Users\\gijca\\source\\repos\\Telemetry-Question-Practice-Generator\\Telemetry\\Telemetry.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Guillermo Jackson\\source\\repos\\Telemetry\\Telemetry-Question-Practice-Generator\\Telemetry\\Telemetry.csproj",
+        "projectUniqueName": "C:\\Users\\gijca\\source\\repos\\Telemetry-Question-Practice-Generator\\Telemetry\\Telemetry.csproj",
         "projectName": "Telemetry",
-        "projectPath": "C:\\Users\\Guillermo Jackson\\source\\repos\\Telemetry\\Telemetry-Question-Practice-Generator\\Telemetry\\Telemetry.csproj",
-        "packagesPath": "C:\\Users\\Guillermo Jackson\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Guillermo Jackson\\source\\repos\\Telemetry\\Telemetry-Question-Practice-Generator\\Telemetry\\obj\\",
+        "projectPath": "C:\\Users\\gijca\\source\\repos\\Telemetry-Question-Practice-Generator\\Telemetry\\Telemetry.csproj",
+        "packagesPath": "C:\\Users\\gijca\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\gijca\\source\\repos\\Telemetry-Question-Practice-Generator\\Telemetry\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Guillermo Jackson\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\gijca\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

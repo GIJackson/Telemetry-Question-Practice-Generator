@@ -28,3 +28,18 @@ C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Ge
 C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\Telemetry.pdb
 C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\Telemetry.genruntimeconfig.cache
 C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\ref\Telemetry.dll
+C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\bin\Debug\net6.0\Telemetry.exe
+C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\bin\Debug\net6.0\Telemetry.deps.json
+C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\bin\Debug\net6.0\Telemetry.runtimeconfig.json
+C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\bin\Debug\net6.0\Telemetry.dll
+C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\bin\Debug\net6.0\Telemetry.pdb
+C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\Telemetry.csproj.AssemblyReference.cache
+C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\Telemetry.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\Telemetry.AssemblyInfoInputs.cache
+C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\Telemetry.AssemblyInfo.cs
+C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\Telemetry.csproj.CoreCompileInputs.cache
+C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\Telemetry.dll
+C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\refint\Telemetry.dll
+C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\Telemetry.pdb
+C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\Telemetry.genruntimeconfig.cache
+C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\ref\Telemetry.dll
