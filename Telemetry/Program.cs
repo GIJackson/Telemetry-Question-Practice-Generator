@@ -113,7 +113,7 @@ namespace Telemetry
                         {
                             using (StreamWriter sw = new StreamWriter(file))
                             {
-                                sw.WriteLine("A new user is born!");
+                                sw.WriteLine("A new user is born!\r");
                             }
                         }
                     }
@@ -137,17 +137,27 @@ namespace Telemetry
                     string file = Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt");
                     using (StreamReader sr = new StreamReader(file))
                     {
-                        string userBorn = "A new user is born!";
+                        string userBorn = "A new user is born!\r";
                         var userSaveData = sr.ReadToEnd();
                         string[] bornFnameLname = userSaveData.Split('\n');
+                        string firstName;
+                        string lastName;
                         if (bornFnameLname[0] != userBorn && bornFnameLname.Length != 4)
                         {
                             Console.WriteLine("The saved user data appears to be corrupted.");
                             user = false;
-                            break;
+                        }//need to put a try catch here
+                        try
+                        {
+                            firstName = bornFnameLname[1].Replace("\r", "");
+                            lastName = bornFnameLname[2].Replace("\r", "");
                         }
-                        string firstName = bornFnameLname[1].Replace("\r", "");
-                        string lastName = bornFnameLname[2].Replace("\r", "");
+                        catch (System.IndexOutOfRangeException)
+                        {
+                            newUser = confirmNewUser; 
+                            goto NEWUSER;
+                        }
+                        
                         Console.WriteLine($"The current user on file is {firstName} {lastName}. Is this correct?");
                         var userConfirm = Console.ReadLine();
                         if (userConfirm.ToUpper() == confirmNewUser.ToUpper())
@@ -160,11 +170,18 @@ namespace Telemetry
                         }
                         else if (userConfirm.ToUpper() != confirmNewUser.ToUpper())
                         {
+                            Console.Clear();
                             Console.WriteLine("Apologies, but to continue as another user, previous user data must be deleted. \n\nDo you wish to continue?");
                             var doIt = Console.ReadLine();
                             if (doIt.ToUpper() == confirmNewUser.ToUpper())
                             {
+                                sr.Close();
+                                using (StreamWriter sw = new StreamWriter(file))
+                                {
+                                    sw.WriteLine("A new user is born!\r");
+                                }
                                 user = false;
+                                counter++;
                                 goto NEWUSER;
                             }
                             else if (doIt.ToUpper() == notNewUser.ToUpper())
@@ -196,8 +213,12 @@ namespace Telemetry
                                         var justChoosePlease = Console.ReadLine();
                                         if (justChoosePlease.ToUpper() == confirmNewUser.ToUpper())
                                         {
+                                            using (StreamWriter sw = new StreamWriter(file))
+                                            {
+                                                sw.WriteLine("A new user is born!\n");
+                                            }
                                             user = false;
-                                            goto NEWUSER; ;
+                                            goto NEWUSER;
                                         }
                                         else if (justChoosePlease.ToUpper() == notNewUser.ToUpper())
                                         {
@@ -219,7 +240,7 @@ namespace Telemetry
                     string file = Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt");
                     using (StreamReader sr = new StreamReader(file))
                     {
-                        string userBorn = "A new user is born!";
+                        string userBorn = "A new user is born!\r";
                         var userSaveData = sr.ReadToEnd();
                         string[] bornFnameLname = userSaveData.Split('\n');
                         if (bornFnameLname[0] != userBorn && bornFnameLname.Length != 4)
