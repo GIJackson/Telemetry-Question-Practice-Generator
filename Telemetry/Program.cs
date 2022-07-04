@@ -11,19 +11,17 @@ namespace Telemetry
 {
     public class Program
     {
-
-
         public static void Main()
         {
             Console.Title = "Telemetry Testing";
             Console.WriteLine("Are you a new user? YES/NO");
-            var newUser = Console.ReadLine();
+            string? newUser = Console.ReadLine();
             var confirmNewUser = "yes";
             var notNewUser = "no";
             bool user = false;
-
             int counter = 0;
-
+            string file;
+            string thatsMe;
         NEWUSER: while (user == false)
             {
                 if (newUser.ToUpper() == notNewUser.ToUpper())
@@ -34,8 +32,12 @@ namespace Telemetry
                 {
                     if (!File.Exists($@"UserSaveData.txt"))
                     {
-                        File.Create($@"UserSaveData.txt").Close();
-                        File.AppendAllText($@"UserSaveData.txt", "A new user is born!\n");
+                        string filePath = $@"UserSaveData.txt";
+                        using (StreamWriter sw = new StreamWriter(filePath, true))
+                        {
+                            sw.WriteLine("A new user is born!");
+                        }
+                            counter++;
                     }
                     else if (File.Exists($@"UserSaveData.txt") && counter == 0)
                     {
@@ -43,31 +45,19 @@ namespace Telemetry
                         {
                             var userSaveData = sr.ReadToEnd();
                             string[] bornFnameLname = userSaveData.Split('\n');
-                            if (bornFnameLname.Length > 2)
+                            if (bornFnameLname.Length == 4)
                             {
-                                try
-                                { // I stopped here to take a break but what I'm trying to do is handle if there is saved user data but the user says they're new
-                                    string firstName = bornFnameLname[1].Replace("\r", "");
-                                    string lastName = bornFnameLname[2].Replace("\r", "");
-                                }
-                                catch (IndexOutOfRangeException)
-                                {
-                                    Console.WriteLine("No user save data found.");
-                                    Console.Clear();
-                                    return;
-
-                                }
-                                catch { }
-                                //Console.WriteLine("Saved user data detected!\n\nPrevious user: ")
-                                ///*goto SW*/;
+                                Console.WriteLine("Saved user data detected!");
+                                user = true;
+                                counter++;
                             }
                             else if (bornFnameLname.Length == 2)
                             {
-                                if (bornFnameLname[0] == "A new user is born!")
+                                if (bornFnameLname[0] == "A new user is born!\r")
                                 {
                                     counter++;
                                 }
-                                else if (bornFnameLname[0] != "A new user is born!")
+                                else if (bornFnameLname[0] != "A new user is born!\r")
                                 {
                                     goto SW;
                                 }
@@ -83,7 +73,7 @@ namespace Telemetry
                     }
                     else if ((File.Exists($@"UserSaveData.txt") && counter == 1))
                     {
-                        string file = Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt");
+                        file = Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt");
                         Console.WriteLine("Please type in your first name and hit enter.");
                         var userFirstName = Console.ReadLine();
                         Console.WriteLine("Please type in your last name and hit enter.");
@@ -117,10 +107,19 @@ namespace Telemetry
                             }
                         }
                     }
-                    else
-                    {
-                        break;
-                    }
+                }
+                else if (newUser == null || newUser == "")
+                {
+                    Console.WriteLine("No input detected. Please answer with Yes or No");
+                    newUser = Console.ReadLine();
+                    Console.Clear();
+
+                }
+                else
+                {
+                    Console.WriteLine("Input not recognized. Please answer with Yes or No");
+                    newUser = Console.ReadLine();
+                    Console.Clear();
                 }
             }
             while (user == true)
@@ -134,7 +133,7 @@ namespace Telemetry
                 }
                 else if (File.Exists($@"UserSaveData.txt") && counter == 0)
                 {
-                    string file = Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt");
+                    file = Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt");
                     using (StreamReader sr = new StreamReader(file))
                     {
                         string userBorn = "A new user is born!\r";
@@ -142,38 +141,10 @@ namespace Telemetry
                         string[] bornFnameLname = userSaveData.Split('\n');
                         string firstName;
                         string lastName;
-                        if (bornFnameLname[0] != userBorn && bornFnameLname.Length != 4)
+                        if (bornFnameLname[0] != userBorn || bornFnameLname.Length != 4)
                         {
                             Console.WriteLine("The saved user data appears to be corrupted.");
-                            user = false;
-                        }//need to put a try catch here
-                        try
-                        {
-                            firstName = bornFnameLname[1].Replace("\r", "");
-                            lastName = bornFnameLname[2].Replace("\r", "");
-                        }
-                        catch (System.IndexOutOfRangeException)
-                        {
-                            newUser = confirmNewUser; 
-                            goto NEWUSER;
-                        }
-                        
-                        Console.WriteLine($"The current user on file is {firstName} {lastName}. Is this correct?");
-                        var userConfirm = Console.ReadLine();
-                        if (userConfirm.ToUpper() == confirmNewUser.ToUpper())
-                        {
-                            //Ideally this will cement the user name as the user and proceed to the main program
-                            string welcomeBack = "Welcome back " + firstName + "!";
-                            Console.WriteLine(welcomeBack);
-                            counter++;
-                            break;
-                        }
-                        else if (userConfirm.ToUpper() != confirmNewUser.ToUpper())
-                        {
-                            Console.Clear();
-                            Console.WriteLine("Apologies, but to continue as another user, previous user data must be deleted. \n\nDo you wish to continue?");
-                            var doIt = Console.ReadLine();
-                            if (doIt.ToUpper() == confirmNewUser.ToUpper())
+                            if (bornFnameLname.Length == 3 || bornFnameLname.Length == 2 || bornFnameLname.Length == 1)
                             {
                                 sr.Close();
                                 using (StreamWriter sw = new StreamWriter(file))
@@ -181,63 +152,142 @@ namespace Telemetry
                                     sw.WriteLine("A new user is born!\r");
                                 }
                                 user = false;
+                                newUser = confirmNewUser.ToUpper();
                                 counter++;
                                 goto NEWUSER;
                             }
-                            else if (doIt.ToUpper() == notNewUser.ToUpper())
+                        }
+                        else if (bornFnameLname[0] == userBorn && bornFnameLname.Length == 4)
+                        {
+                            try
                             {
-                                Console.WriteLine($"Continue as {firstName} {lastName}?");
-                                var thatsMe = Console.ReadLine();
-                                if (thatsMe.ToUpper() == confirmNewUser.ToUpper())
-                                {   //Ideally this will cement the user name as the user and proceed to the main program
+                                firstName = bornFnameLname[1].Replace("\r", "");
+                                lastName = bornFnameLname[2].Replace("\r", "");
+                            }
+                            catch (System.IndexOutOfRangeException)
+                            {
+                                Console.WriteLine("The saved user data appears to be corrupted.");
+                                sr.Close();
+                                using (StreamWriter sw = new StreamWriter(file))
+                                {
+                                    sw.WriteLine("A new user is born!\r");
+                                }
+                                user = false;
+                                newUser = confirmNewUser.ToUpper();
+                                counter++;
+                                goto NEWUSER;
+                            }
+                            firstName = bornFnameLname[1].Replace("\r", "");
+                            lastName = bornFnameLname[2].Replace("\r", "");
+                            string welcomeBack = "Welcome back " + firstName + "!";
+                            Console.WriteLine($"The current user on file is {firstName} {lastName}. Is this correct?");
+                            var userConfirm = Console.ReadLine();
+                                if (userConfirm.ToUpper() == confirmNewUser.ToUpper())
+                                {
+                                    //Ideally this will cement the user name as the user and proceed to the main program
+                                    Console.WriteLine(welcomeBack);
+                                    counter++;
                                     break;
                                 }
-                                else if (thatsMe.ToUpper() == notNewUser.ToUpper())
+                                else if (userConfirm.ToUpper() != confirmNewUser.ToUpper())
                                 {
-                                    Console.WriteLine($"To continue, you must choose to overwrite user data or continue as {firstName} {lastName}.\n");
-                                    Thread.Sleep(3000);
-                                    goto JUSTCHOOSELOOP;
-                                }
-                            JUSTCHOOSELOOP: for (doIt = notNewUser; ;)
-                                {
-                                    Console.WriteLine($"Continue as {firstName} {lastName}?");
-                                    var justChoose = Console.ReadLine();
-                                    if (justChoose.ToUpper() == confirmNewUser.ToUpper())
+                                    Console.Clear();
+                                    Console.WriteLine("Apologies, but to continue as another user, previous user data must be deleted. \n\nDo you wish to continue?");
+                                    var doIt = Console.ReadLine();
+                                    if (doIt.ToUpper() == confirmNewUser.ToUpper())
                                     {
+                                        sr.Close();
+                                        using (StreamWriter sw = new StreamWriter(file))
+                                        {
+                                            sw.WriteLine("A new user is born!\r");
+                                        }
                                         user = false;
+                                        counter++;
                                         goto NEWUSER;
                                     }
-                                    else if (justChoose.ToUpper() == notNewUser.ToUpper())
+                                    else if (doIt.ToUpper() == notNewUser.ToUpper())
                                     {
-                                        Console.WriteLine("Do you wish to overwrite previous user data?");
-                                        var justChoosePlease = Console.ReadLine();
-                                        if (justChoosePlease.ToUpper() == confirmNewUser.ToUpper())
-                                        {
-                                            using (StreamWriter sw = new StreamWriter(file))
-                                            {
-                                                sw.WriteLine("A new user is born!\n");
-                                            }
-                                            user = false;
-                                            goto NEWUSER;
+                                        Console.WriteLine($"Continue as {firstName} {lastName}?");
+                                        thatsMe = Console.ReadLine();
+                                        if (thatsMe.ToUpper() == confirmNewUser.ToUpper())
+                                        {   //Ideally this will cement the user name as the user and proceed to the main program
+                                        Console.WriteLine(welcomeBack);
+                                        counter++;
+
+                                        break;
                                         }
-                                        else if (justChoosePlease.ToUpper() == notNewUser.ToUpper())
+                                        else if (thatsMe.ToUpper() == notNewUser.ToUpper())
                                         {
                                             Console.WriteLine($"To continue, you must choose to overwrite user data or continue as {firstName} {lastName}.\n");
                                             Thread.Sleep(3000);
-                                            continue;
+                                            goto JUSTCHOOSELOOP;
                                         }
+                                    }
+                                    JUSTCHOOSELOOP: for (doIt = notNewUser; ;)
+                                        {
+                                            Console.WriteLine($"Continue as {firstName} {lastName}?");
+                                            var justChoose = Console.ReadLine();
+                                            if (justChoose.ToUpper() == confirmNewUser.ToUpper())
+                                            {
+                                                user = false;
+                                                goto NEWUSER;
+                                            }
+                                            else if (justChoose.ToUpper() == notNewUser.ToUpper())
+                                            {
+                                                Console.WriteLine("Do you wish to overwrite previous user data?");
+                                                var justChoosePlease = Console.ReadLine();
+                                                if (justChoosePlease.ToUpper() == confirmNewUser.ToUpper())
+                                                {
+                                                    using (StreamWriter sw = new StreamWriter(file))
+                                                    {
+                                                        sw.WriteLine("A new user is born!\n");
+                                                    }
+                                                    user = false;
+                                                    goto NEWUSER;
+                                                }
+                                                else if (justChoosePlease.ToUpper() == notNewUser.ToUpper())
+                                                {
+                                                    Console.WriteLine($"To continue, you must choose to overwrite user data or continue as {firstName} {lastName}.\n");
+                                                    Thread.Sleep(3000);
+                                                    continue;
+                                                }
 
+                                            }
+                                        }
                                     }
                                 }
-                            }
                         }
-                    }
 
 
                 }
+                else if (File.Exists($@"UserSaveData.txt") && counter == 1)
+                {
+                    file = Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt");
+                    using (StreamReader sr = new StreamReader(file))
+                    {
+                        string userBorn = "A new user is born!\r";
+                        var userSaveData = sr.ReadToEnd();
+                        string[] bornFnameLname = userSaveData.Split('\n');
+                        string firstName;
+                        string lastName;
+                        if (bornFnameLname[0] != userBorn || bornFnameLname.Length != 4)
+                        {
+                            Console.WriteLine("The saved user data appears to be corrupted.");
+                            user = false;
+                            goto NEWUSER;
+                        }
+                        else if ((bornFnameLname[0] == userBorn && bornFnameLname.Length == 4))
+                        {
+                            user = true;
+                            counter--;
+
+                        }
+
+                    }
+                }
                 else if (File.Exists($@"UserSaveData.txt") && counter == 2)
                 {
-                    string file = Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt");
+                    file = Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt");
                     using (StreamReader sr = new StreamReader(file))
                     {
                         string userBorn = "A new user is born!\r";
@@ -264,69 +314,6 @@ namespace Telemetry
             Console.WriteLine("The end... for now...");
             Console.ReadKey();
         }
-        //    if (newUser.ToUpper() == confirmNewUser.ToUpper() && counter == 0)
-        //    {
-
-        //        using (var file = File.OpenRead(Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt")))
-        //        {
-        //            var userBorn = File.ReadAllLines(file);
-        //            //var userSaveDataReader = new StreamReader(stream);
-        //            if (userBorn[0] == "A new user is born!\n")
-        //            {
-        //                continue;
-        //            }
-        //            else if (userBorn[0] != "A new user is born!\n")
-        //            {
-        //                File.WriteAllText($@"UserSaveData.txt", String.Empty);
-        //            }
-        //        }
-        //        //Console.WriteLine("Is this correct? " + userSaveData[1] + " " + userSaveData[2]);
-        //        //var confirmation = Console.ReadLine();
-        //       //if (confirmation.ToUpper() == confirmNewUser.ToUpper())
-        //        //{
-        //        //    user = true;
-        //        //}
-
-        //    }
-        //    else if (newUser.ToUpper() == confirmNewUser.ToUpper() && counter > 0)
-        //    {
-        //        string file = Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt");
-        //        var userSaveData = File.ReadAllLines(file);
-        //        Console.WriteLine("Is this correct? " + userSaveData[1] + " " + userSaveData[2]);
-        //        var confirmation = Console.ReadLine();
-        //        if (confirmation.ToUpper() == confirmNewUser.ToUpper())
-        //        {
-        //            user = true;
-        //        }
-        //    }
-        //    else if (newUser.ToUpper() == notNewUser.ToUpper())
-        //    {
-        //        string file = Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt");
-        //        var userSaveData = File.ReadAllLines(file);
-        //        Console.WriteLine("Is this correct?");
-        //        Console.WriteLine(userSaveData[0] + " " + userSaveData[1]);
-        //        var confirmation = Console.ReadLine();
-        //        if (confirmation.ToUpper() == confirmNewUser.ToUpper())
-        //        {
-        //            user = true;
-        //        }
-        //        else if (confirmation.ToUpper() == notNewUser.ToUpper())
-        //        {
-        //            Console.WriteLine("Please type your first name and then press Enter.");
-        //            string userFirstName = Console.ReadLine();
-        //            Console.WriteLine("Please type your last name and then press Enter.");
-        //            string userLastName = Console.ReadLine();
-        //            File.WriteAllText(file, userFirstName + "\n");
-        //            File.AppendAllText(file, userLastName + "\n");
-        //        }
-        //    }
-
-        //}
-
-
-
-
-
         Dictionary<string, string> waves = new Dictionary<string, string>()
             {
                 {@"              x                                          x                                          x                                          x                                          x
