@@ -14,307 +14,280 @@ namespace Telemetry
         public static void Main()
         {
             Console.Title = "Telemetry Testing";
-            Console.WriteLine("Are you a new user? YES/NO");
-            string? newUser = Console.ReadLine();
-            var confirmNewUser = "yes";
-            var notNewUser = "no";
-            bool user = false;
+            Console.WriteLine("Checking for user save data... please standby...");
+            Thread.Sleep(3500);
+            string notNewUser = "no";
+            string confirmNewUser = "yes";
+            bool userOnFile = false;
+            bool returningUser = false;
+            bool newUser = false;
             int counter = 0;
-            string file;
-            string thatsMe;
-        NEWUSER: while (user == false)
+            //counter at 0 means the program just loaded up, used to check for intial save data
+            //counter at 1 means there is a useable save file
+            //counter at 2 means there is some corruption issues in nead of correcting or save file changing
+            while (userOnFile == false)
             {
-                if (newUser.ToUpper() == notNewUser.ToUpper())
+                while (userOnFile == false && counter == 0)
                 {
-                    user = true;
-                }
-                else if (newUser.ToUpper() == confirmNewUser.ToUpper())
-                {
-                    if (!File.Exists($@"UserSaveData.txt"))
+                    if (!File.Exists("UserSaveData.txt"))
                     {
-                        string filePath = $@"UserSaveData.txt";
-                        using (StreamWriter sw = new StreamWriter(filePath, true))
+                        string newFile = "UserSaveData.txt";
+                        using (StreamWriter sw = new StreamWriter(newFile, false))
                         {
                             sw.WriteLine("A new user is born!");
-                        }
                             counter++;
+                        }
                     }
-                    else if (File.Exists($@"UserSaveData.txt") && counter == 0)
+                    else if (File.Exists("UserSaveData.txt"))
                     {
-                        using (StreamReader sr = new StreamReader($@"UserSaveData.txt"))
+                        using (StreamReader sr = new StreamReader("UserSaveData.txt"))
                         {
                             var userSaveData = sr.ReadToEnd();
-                            string[] bornFnameLname = userSaveData.Split('\n');
-                            if (bornFnameLname.Length == 4)
+                            string userBorn = "A new user is born!";
+                            string[] bornWithFirstAndLastName = userSaveData.Split('\r', '\n');
+                            if (bornWithFirstAndLastName[0] != userBorn)
                             {
-                                Console.WriteLine("Saved user data detected!");
-                                user = true;
+                                Console.WriteLine("Current user save data appears corrupted or in use by another application.");
+                                counter += 2;
+                            }
+                            else if (bornWithFirstAndLastName[0] == userBorn && bornWithFirstAndLastName.Length < 4 && string.IsNullOrEmpty(bornWithFirstAndLastName[2]))
+                            {
                                 counter++;
                             }
-                            else if (bornFnameLname.Length == 2)
+                            else if (bornWithFirstAndLastName[0] == userBorn && !string.IsNullOrEmpty(bornWithFirstAndLastName[2]) && !string.IsNullOrEmpty(bornWithFirstAndLastName[4]))
                             {
-                                if (bornFnameLname[0] == "A new user is born!\r")
+                                Console.WriteLine($"\nUser Save Data Detected!\n\nAre you {bornWithFirstAndLastName[2]} {bornWithFirstAndLastName[4]}? (Yes/No)");
+                                string? yesThisIsMe = Console.ReadLine();
+                                //returning user//
+                                if (yesThisIsMe.ToUpper() == confirmNewUser.ToUpper())
                                 {
+                                    returningUser = true;
+                                    userOnFile = true;
                                     counter++;
                                 }
-                                else if (bornFnameLname[0] != "A new user is born!\r")
+                                //possible new user//
+                                else if (yesThisIsMe.ToUpper() == notNewUser.ToUpper())
                                 {
-                                    goto SW;
+                                    counter += 2;
                                 }
-                            }
-                            else if (bornFnameLname.Length <= 1)
-                            {
-                                goto SW2;
-                            }
-                            continue;
-                        }
-                    SW: File.WriteAllText($@"UserSaveData.txt", string.Empty);
-                    SW2: File.WriteAllText($@"UserSaveData.txt", "A new user is born!\n");
-                    }
-                    else if ((File.Exists($@"UserSaveData.txt") && counter == 1))
-                    {
-                        file = Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt");
-                        Console.WriteLine("Please type in your first name and hit enter.");
-                        var userFirstName = Console.ReadLine();
-                        Console.WriteLine("Please type in your last name and hit enter.");
-                        var userLaseName = Console.ReadLine();
-                        using (var sw = File.AppendText(file))
-                        {
-                            sw.WriteLine(userFirstName);
-                            sw.WriteLine(userLaseName);
-                        }
-                        Console.Clear();
-                        using (StreamReader sr = new StreamReader(file))
-                        {
-                            var userSaveData = sr.ReadToEnd();
-                            string[] bornFnameLname = userSaveData.Split('\n');
-                            string firstName = bornFnameLname[1].Replace("\r", "");
-                            string lastName = bornFnameLname[2].Replace("\r", "");
-                            Console.WriteLine($"You entered {firstName} {lastName}. Is this correct?");
-                        }
-                        var userConfirm = Console.ReadLine();
-                        if (userConfirm.ToUpper() == confirmNewUser.ToUpper())
-                        {
-                            counter++;
-                            user = true;
-                            continue;
-                        }
-                        else if (userConfirm.ToUpper() != confirmNewUser.ToUpper())
-                        {
-                            using (StreamWriter sw = new StreamWriter(file))
-                            {
-                                sw.WriteLine("A new user is born!\r");
-                            }
-                        }
-                    }
-                }
-                else if (newUser == null || newUser == "")
-                {
-                    Console.WriteLine("No input detected. Please answer with Yes or No");
-                    newUser = Console.ReadLine();
-                    Console.Clear();
-
-                }
-                else
-                {
-                    Console.WriteLine("Input not recognized. Please answer with Yes or No");
-                    newUser = Console.ReadLine();
-                    Console.Clear();
-                }
-            }
-            while (user == true)
-            {
-                if (!File.Exists($@"UserSaveData.txt"))
-                {
-                    Console.WriteLine("There is no user data saved.");
-                    user = false;
-                    newUser = confirmNewUser.ToUpper();
-                    goto NEWUSER;
-                }
-                else if (File.Exists($@"UserSaveData.txt") && counter == 0)
-                {
-                    file = Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt");
-                    using (StreamReader sr = new StreamReader(file))
-                    {
-                        string userBorn = "A new user is born!\r";
-                        var userSaveData = sr.ReadToEnd();
-                        string[] bornFnameLname = userSaveData.Split('\n');
-                        string firstName;
-                        string lastName;
-                        if (bornFnameLname[0] != userBorn || bornFnameLname.Length != 4)
-                        {
-                            Console.WriteLine("The saved user data appears to be corrupted.");
-                            if (bornFnameLname.Length == 3 || bornFnameLname.Length == 2 || bornFnameLname.Length == 1)
-                            {
-                                sr.Close();
-                                using (StreamWriter sw = new StreamWriter(file))
+                                else if (string.IsNullOrWhiteSpace(yesThisIsMe) || yesThisIsMe.ToUpper() != confirmNewUser.ToUpper() && yesThisIsMe.ToUpper() != notNewUser.ToUpper())
                                 {
-                                    sw.WriteLine("A new user is born!\r");
+                                    Console.WriteLine("\nInput invalid.");
+                                    for (; ; )
+                                    {
+                                        Console.WriteLine($"\nAre you {bornWithFirstAndLastName[2]} {bornWithFirstAndLastName[4]} (Yes/No)");
+                                        yesThisIsMe = Console.ReadLine();
+                                        //returning user//
+                                        if (yesThisIsMe.ToUpper() == confirmNewUser.ToUpper())
+                                        {
+                                            userOnFile = true;
+                                            returningUser = true;
+                                            counter++;
+                                            break;
+                                        }
+                                        //possible new user//
+                                        else if (yesThisIsMe.ToUpper() == notNewUser.ToUpper())
+                                        {
+                                            Console.WriteLine($"To continue, you must overwrite previous user data or continue as {bornWithFirstAndLastName[2]} {bornWithFirstAndLastName[4]}.");
+                                            counter += 2;
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Input invalid.");
+                                            Thread.Sleep(1500);
+                                            Console.Clear();
+                                        }
+                                    }
                                 }
-                                user = false;
-                                newUser = confirmNewUser.ToUpper();
-                                counter++;
-                                goto NEWUSER;
-                            }
-                        }
-                        else if (bornFnameLname[0] == userBorn && bornFnameLname.Length == 4)
-                        {
-                            try
-                            {
-                                firstName = bornFnameLname[1].Replace("\r", "");
-                                lastName = bornFnameLname[2].Replace("\r", "");
-                            }
-                            catch (System.IndexOutOfRangeException)
-                            {
-                                Console.WriteLine("The saved user data appears to be corrupted.");
-                                sr.Close();
-                                using (StreamWriter sw = new StreamWriter(file))
+                                else
                                 {
-                                    sw.WriteLine("A new user is born!\r");
-                                }
-                                user = false;
-                                newUser = confirmNewUser.ToUpper();
-                                counter++;
-                                goto NEWUSER;
-                            }
-                            firstName = bornFnameLname[1].Replace("\r", "");
-                            lastName = bornFnameLname[2].Replace("\r", "");
-                            string welcomeBack = "Welcome back " + firstName + "!";
-                            Console.WriteLine($"The current user on file is {firstName} {lastName}. Is this correct?");
-                            var userConfirm = Console.ReadLine();
-                                if (userConfirm.ToUpper() == confirmNewUser.ToUpper())
-                                {
-                                    //Ideally this will cement the user name as the user and proceed to the main program
-                                    Console.WriteLine(welcomeBack);
-                                    counter++;
                                     break;
                                 }
-                                else if (userConfirm.ToUpper() != confirmNewUser.ToUpper())
+                            }
+                        }
+                    }
+                }
+                while (userOnFile == false && counter == 1)
+                {
+                    var file = Path.Combine(Directory.GetCurrentDirectory(), "UserSaveData.txt");
+                    Console.WriteLine("\nNew user detected!");
+                    Console.WriteLine("\nPlease type in your first name and press enter.");
+                    string? userFirstName = Console.ReadLine();
+                    Console.WriteLine("\nPlease type in your last name and press enter.");
+                    string? userLaseName = Console.ReadLine();
+                    using (var sw = File.AppendText(file))
+                    {
+                        sw.WriteLine(userFirstName);
+                        sw.WriteLine(userLaseName);
+                    }
+                    using (var sr = new StreamReader(file))
+                    {
+                        var userSaveData = sr.ReadToEnd();
+                        string[] bornWithFirstAndLastName = userSaveData.Split('\r', '\n');
+                        if (string.IsNullOrWhiteSpace(userFirstName) || string.IsNullOrWhiteSpace(userLaseName))
+                        {
+                            Console.WriteLine("Your first and last name must consist of a combination of letters or numbers.");
+                            sr.Close();
+                            using (StreamWriter sw = new StreamWriter(file, false))
+                            {
+                                sw.WriteLine("A new user is born!");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"\nYou entered: {bornWithFirstAndLastName[2]} {bornWithFirstAndLastName[4]}\n\nIs this correct? (Yes/No)");
+                            string? yesThisIsMe = Console.ReadLine();
+                            if (yesThisIsMe.ToUpper() == confirmNewUser.ToUpper())
+                            {
+                                newUser = true;
+                                userOnFile = true;
+                            }
+                            else if (yesThisIsMe.ToUpper() == notNewUser.ToUpper())
+                            {
+                                sr.Close();
+                                using (StreamWriter sw = new StreamWriter(file, false))
                                 {
-                                    Console.Clear();
-                                    Console.WriteLine("Apologies, but to continue as another user, previous user data must be deleted. \n\nDo you wish to continue?");
-                                    var doIt = Console.ReadLine();
-                                    if (doIt.ToUpper() == confirmNewUser.ToUpper())
+                                    sw.WriteLine("A new user is born!");
+                                }
+                            }
+                            else if (string.IsNullOrWhiteSpace(yesThisIsMe) || yesThisIsMe.ToUpper() != confirmNewUser.ToUpper() && yesThisIsMe.ToUpper() != notNewUser.ToUpper())
+                            {
+                                Console.WriteLine("Input invalid.");
+                                Thread.Sleep(1500);
+                                Console.Clear();
+                                for (; ; )
+                                {
+                                    Console.WriteLine($"\nYou entered: {bornWithFirstAndLastName[2]} {bornWithFirstAndLastName[4]}\n\nIs this correct? (Yes/No)");
+                                    yesThisIsMe = Console.ReadLine();
+                                    if (yesThisIsMe.ToUpper() == confirmNewUser.ToUpper())
+                                    {
+                                        Console.WriteLine($"Welcome, {bornWithFirstAndLastName[2]} {bornWithFirstAndLastName[4]}!");
+                                        userOnFile = true;
+                                        break;
+                                    }
+                                    else if (yesThisIsMe.ToUpper() == notNewUser.ToUpper())
                                     {
                                         sr.Close();
-                                        using (StreamWriter sw = new StreamWriter(file))
+                                        using (StreamWriter sw = new StreamWriter(file, false))
                                         {
-                                            sw.WriteLine("A new user is born!\r");
+                                            sw.WriteLine("A new user is born!");
                                         }
-                                        user = false;
-                                        counter++;
-                                        goto NEWUSER;
-                                    }
-                                    else if (doIt.ToUpper() == notNewUser.ToUpper())
-                                    {
-                                        Console.WriteLine($"Continue as {firstName} {lastName}?");
-                                        thatsMe = Console.ReadLine();
-                                        if (thatsMe.ToUpper() == confirmNewUser.ToUpper())
-                                        {   //Ideally this will cement the user name as the user and proceed to the main program
-                                        Console.WriteLine(welcomeBack);
-                                        counter++;
-
                                         break;
-                                        }
-                                        else if (thatsMe.ToUpper() == notNewUser.ToUpper())
-                                        {
-                                            Console.WriteLine($"To continue, you must choose to overwrite user data or continue as {firstName} {lastName}.\n");
-                                            Thread.Sleep(3000);
-                                            goto JUSTCHOOSELOOP;
-                                        }
                                     }
-                                    JUSTCHOOSELOOP: for (doIt = notNewUser; ;)
-                                        {
-                                            Console.WriteLine($"Continue as {firstName} {lastName}?");
-                                            var justChoose = Console.ReadLine();
-                                            if (justChoose.ToUpper() == confirmNewUser.ToUpper())
-                                            {
-                                                user = false;
-                                                goto NEWUSER;
-                                            }
-                                            else if (justChoose.ToUpper() == notNewUser.ToUpper())
-                                            {
-                                                Console.WriteLine("Do you wish to overwrite previous user data?");
-                                                var justChoosePlease = Console.ReadLine();
-                                                if (justChoosePlease.ToUpper() == confirmNewUser.ToUpper())
-                                                {
-                                                    using (StreamWriter sw = new StreamWriter(file))
-                                                    {
-                                                        sw.WriteLine("A new user is born!\n");
-                                                    }
-                                                    user = false;
-                                                    goto NEWUSER;
-                                                }
-                                                else if (justChoosePlease.ToUpper() == notNewUser.ToUpper())
-                                                {
-                                                    Console.WriteLine($"To continue, you must choose to overwrite user data or continue as {firstName} {lastName}.\n");
-                                                    Thread.Sleep(3000);
-                                                    continue;
-                                                }
-
-                                            }
-                                        }
+                                    else
+                                    {
+                                        Console.WriteLine("\nInput invalid.");
+                                        Thread.Sleep(1500);
+                                        Console.Clear();
                                     }
                                 }
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
-
-
-                }
-                else if (File.Exists($@"UserSaveData.txt") && counter == 1)
-                {
-                    file = Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt");
-                    using (StreamReader sr = new StreamReader(file))
-                    {
-                        string userBorn = "A new user is born!\r";
-                        var userSaveData = sr.ReadToEnd();
-                        string[] bornFnameLname = userSaveData.Split('\n');
-                        string firstName;
-                        string lastName;
-                        if (bornFnameLname[0] != userBorn || bornFnameLname.Length != 4)
-                        {
-                            Console.WriteLine("The saved user data appears to be corrupted.");
-                            user = false;
-                            goto NEWUSER;
-                        }
-                        else if ((bornFnameLname[0] == userBorn && bornFnameLname.Length == 4))
-                        {
-                            user = true;
-                            counter--;
-
-                        }
-
                     }
                 }
-                else if (File.Exists($@"UserSaveData.txt") && counter == 2)
+                while (userOnFile == false && counter == 2)
                 {
-                    file = Path.Combine(Directory.GetCurrentDirectory(), $@"UserSaveData.txt");
+                    var file = Path.Combine(Directory.GetCurrentDirectory(), "UserSaveData.txt");
+                    string? overWriteFile;
                     using (StreamReader sr = new StreamReader(file))
                     {
-                        string userBorn = "A new user is born!\r";
                         var userSaveData = sr.ReadToEnd();
-                        string[] bornFnameLname = userSaveData.Split('\n');
-                        if (bornFnameLname[0] != userBorn && bornFnameLname.Length != 4)
+                        string userBorn = "A new user is born!";
+                        string[] bornWithFirstAndLastName = userSaveData.Split('\r', '\n');
+                        if (bornWithFirstAndLastName[0] != userBorn)
                         {
-                            Console.WriteLine("The saved user data appears to be corrupted.");
-                            user = false;
-                            goto NEWUSER;
+                            Console.WriteLine("\nOverwrite current user save file? (Yes/No)");
+                            overWriteFile = Console.ReadLine();
+                            if (overWriteFile.ToUpper() == confirmNewUser.ToUpper())
+                            {
+                                sr.Close();
+                                using (StreamWriter sw = new StreamWriter(file, false))
+                                {
+                                    sw.WriteLine("A new user is born!");
+                                }
+                                Thread.Sleep(1500);
+                                Console.Clear();
+                                counter--;
+                            }
+                            else if (overWriteFile.ToUpper() == notNewUser.ToUpper())
+                            {
+                                Console.WriteLine($"\nTo continue you must overwrite user save file.");
+                            }
+                            else if (string.IsNullOrWhiteSpace(overWriteFile) || overWriteFile.ToUpper() != confirmNewUser.ToUpper() && overWriteFile.ToUpper() != notNewUser.ToUpper())
+                            {
+                                Console.WriteLine("\nInput invalid.");
+                                Thread.Sleep(1500);
+                                Console.Clear();
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
-                        string firstName = bornFnameLname[1].Replace("\r", "");
-                        string welcome = "Welcome " + firstName + "!";
-                        Console.WriteLine(welcome);
-                        counter++;
-                        continue;
+                        else if (bornWithFirstAndLastName[0] == userBorn && bornWithFirstAndLastName.Length == 7)
+                        {
+                            Console.WriteLine($"\nTo continue you must overwrite user save file or continue as {bornWithFirstAndLastName[2]} {bornWithFirstAndLastName[4]}.");
+                            Console.WriteLine("\nOverwrite current user save file? (Yes/No)\n");
+                            overWriteFile = Console.ReadLine();
+                            if (overWriteFile.ToUpper() == confirmNewUser.ToUpper())
+                            {
+                                sr.Close();
+                                using (StreamWriter sw = new StreamWriter(file, false))
+                                {
+                                    sw.WriteLine("A new user is born!");
+                                }
+                                Console.Clear();
+                                counter--;
+                            }
+                            else if (overWriteFile.ToUpper() == notNewUser.ToUpper())
+                            {
+                                string? itsMe;
+                                Console.WriteLine($"Continue as {bornWithFirstAndLastName[2]} {bornWithFirstAndLastName[4]}?");
+                                itsMe = Console.ReadLine();
+                                if (itsMe.ToUpper() == notNewUser.ToUpper())
+                                {
+                                    continue;
+                                }
+                                else if (itsMe.ToUpper() == confirmNewUser.ToUpper())
+                                {
+                                    userOnFile = true;
+                                    counter--;
+                                }
+                                else if (string.IsNullOrWhiteSpace(itsMe) || itsMe.ToUpper() != confirmNewUser.ToUpper() && itsMe.ToUpper() != notNewUser.ToUpper())
+                                {
+                                    Console.WriteLine("\nInput invalid.");
+                                    Thread.Sleep(1500);
+                                    Console.Clear();
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                            else if (string.IsNullOrWhiteSpace(overWriteFile) || overWriteFile.ToUpper() != confirmNewUser.ToUpper() && overWriteFile.ToUpper() != notNewUser.ToUpper())
+                            {
+                                Console.WriteLine("\nInput invalid.");
+                                Thread.Sleep(1500);
+                                Console.Clear();
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
                     }
-                }
-                else
-                {
-                    break;
                 }
             }
-            Console.WriteLine("The end... for now...");
-            Console.ReadKey();
-        }
-        Dictionary<string, string> waves = new Dictionary<string, string>()
+            Console.Clear();
+            Console.WriteLine("Processing...");
+            Thread.Sleep(5000);
+            Console.Clear();
+            Dictionary<string, string> waves = new Dictionary<string, string>()
             {
                 {@"              x                                          x                                          x                                          x                                          x
               xx                                         xx                                         xx                                         xx                                         xx
@@ -603,135 +576,251 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
  x       xx             x      xx           xx      x       xx            x                                                              xxxx                 xx
 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────", "Ventricular Fibrillation"}
             };
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "UserSaveData.txt");
+            bool continueQuiz = true;
+            while (continueQuiz == true)
+            {
+                Console.WriteLine(DateTime.Now.ToString("MM/dd/yyyy hh:mm tt"));
+                TitleMenu.WriteLogo();
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    var userSaveData = sr.ReadToEnd();
+                    string[] bornWithFirstAndLastName = userSaveData.Split('\r', '\n');
+                    if (newUser == true && returningUser == false)
+                    {
+                        Console.WriteLine($"\nWelcome, {bornWithFirstAndLastName[2]} {bornWithFirstAndLastName[4]}! Would you like to begin your test? \n\nEnter 1 to begin, enter 2 to quit, enter 3 to see answer key.");
+                    }
+                    else if (newUser == false && returningUser == true)
+                    {
+                        Console.WriteLine($"\nWelcome back, {bornWithFirstAndLastName[2]} {bornWithFirstAndLastName[4]}! Would you like to begin your test? \n\nEnter 1 to begin, enter 2 to quit, enter 3 to see answer key.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"\nWelcome! Would you like to begin your test? \n\nEnter 1 to begin, enter 2 to quit, enter 3 to see answer key.");
+                    }
+                }
+                string? begin = Console.ReadLine();
+                if (begin == "1")
+                {
+                    Console.Clear();
+                    Console.WriteLine("For the following questions you will be presented with an image representing a telemetry waveform.\n\nThe images equate to a 10 second history of telemety monitoring.\n\nTo view the image in its entirety you will need to utilize the window scroll bar located at the bottom of the\napplication window.\n");
+                    Console.WriteLine("Warning: Adjusting the window height or length will cause the images to distort. Following the prompts\nto restart the test will resolve the distortion.\n");
+                    Console.WriteLine("(Press any key to continue...)");
+                    Console.ReadKey();
+                    Console.SetBufferSize(240, 66);
+                    string startTime;
+                    string endTime;
+                    string userSaveData;
+                    string[] bornWithFirstAndLastName;
+                    using (StreamReader sr = new StreamReader(filePath))
+                    {
+                        userSaveData = sr.ReadToEnd();
+                        bornWithFirstAndLastName = userSaveData.Split('\r', '\n');
+                    };
+                    string scoreFile = $"{bornWithFirstAndLastName[2]}_{bornWithFirstAndLastName[4]}_Scores.txt";
+                    var scoreFilePath = Path.Combine(Directory.GetCurrentDirectory(), scoreFile);
+                    using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
+                    {
+                        sw.Write("This test was taken on: "); sw.Write(DateTime.Now.ToString("MM/dd/yyyy"));
+                        sw.Write(" at "); sw.Write(DateTime.Now.ToString("hh:mm tt")); sw.Write("\r\n");
+                    };
+                    int score = 19;
+                    List<string> randomKey = new(waves.Keys);
+                    var _random = new Random();
+                    var randomKeyList = randomKey.OrderBy(item => _random.Next());
+                    var questionKey = randomKeyList.ToArray();
+                    startTime = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
+                    for (int i = 0; i < questionKey.Length; i++)
+                    {
+                        Console.Clear();
+                        Console.WriteLine(questionKey[i]);
+                        Console.WriteLine();
+                        Console.WriteLine("What rhythm does this represent?");
+                        var answer = waves[questionKey[i]];
+                        var userAnswer = Console.ReadLine();
+                        if (String.IsNullOrEmpty(userAnswer) && i == (questionKey.Length - 1))
+                        {
+                            Console.WriteLine($"That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nYou have completed the last question, congratulations!\n\n");
+                            Console.WriteLine("Enter any key to return to the main menu.");
+                            Console.WriteLine();
+                            Console.ReadKey();
+                            Console.Clear();
+                            score--;
+                            newUser = false;
+                            returningUser = true;
+                            using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
+                            {
+                                sw.Write($"{i + 1}X:"); sw.Write($" {answer}. "); sw.Write($"You did not give an answer.\r\n");
+                                sw.Write($"You scored {score}/19. ");
+                            };
+                            break;
+                        }
+                        else if (String.IsNullOrEmpty(userAnswer))
+                        {
+                            Console.WriteLine("That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nEnter any key to continue or press 2 to to return to the main menu.");
+                            score--;
+                            using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
+                            {
+                                sw.Write($"{i + 1}X:"); sw.Write($" {answer}. "); sw.Write($"You did not give an answer.\r\n");
+                            };
+                            if (Console.ReadLine() == "2")
+                            {
+                                Console.Clear();
+                                int quitScore = (18 - i);
+                                score -= quitScore;
+                                using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
+                                {
+                                    sw.Write($"You quit early. You scored {score}/19. ");
+                                };
+                                newUser = false;
+                                returningUser = true;
+                                break;
+                            }
+                        }
+                        else if (i == (questionKey.Length - 1) && userAnswer.ToUpper() == answer.ToUpper())
+                        {
+                            Console.WriteLine("Correct!\n\nYou have completed the last question, congratulations!\n\n");
+                            Console.WriteLine("Enter any key to return to the main menu.");
+                            Console.WriteLine();
+                            Console.ReadKey();
+                            Console.Clear();
+                            newUser = false;
+                            returningUser = true;
+                            using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
+                            {
+                                sw.Write($"{i + 1}✓:"); sw.Write($" {answer}. "); sw.Write($"You answered: {userAnswer}\r\n");
+                                sw.Write($"You scored {score}/19. ");
+                            };
+                            break;
+                        }
 
+                        else if (i == (questionKey.Length - 1) && userAnswer.ToUpper() != answer.ToUpper())
+                        {
+                            Console.WriteLine("That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nYou have completed the last question, congratulations!\n\n");
+                            Console.WriteLine("Enter any key to return to the main menu.");
+                            Console.WriteLine();
+                            Console.ReadKey();
+                            Console.Clear();
+                            score--;
+                            newUser = false;
+                            returningUser = true;
+                            using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
+                            {
+                                sw.Write($"{i + 1}X:"); sw.Write($" {answer}. "); sw.Write($"You answered: {userAnswer}\r\n");
+                                sw.Write($"You scored {score}/19. ");
+                            };
+                            break;
+                        }
+                        else if (userAnswer.ToUpper() == answer.ToUpper())
+                        {
+                            Console.WriteLine("Correct!");
+                            Console.WriteLine("Enter any key to continue or press 2 to quit.");
+                            using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
+                            {
+                                sw.Write($"{i + 1}✓:"); sw.Write($" {answer}. "); sw.Write($"You answered: {userAnswer}\r\n");
+                            };
+                            if (Console.ReadLine() == "2")
+                            {
+                                Console.Clear();
+                                int quitScore = (18 - i);
+                                score -= quitScore;
+                                using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
+                                {
+                                    sw.Write($"You quit early. You scored {score}/19. ");
+                                };
+                                newUser = false;
+                                returningUser = true;
+                                break;
+                            }
+                        }
+                        else if (userAnswer.ToUpper() != answer.ToUpper())
+                        {
+                            Console.WriteLine("That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nEnter any key to continue or press 2 to to return to the main menu.");
+                            score--;
+                            using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
+                            {
+                                sw.Write($"{i + 1}X:"); sw.Write($" {answer}. "); sw.Write($"You answered: {userAnswer}\r\n");
+                            };
+                            if (Console.ReadLine() == "2")
+                            {
+                                Console.Clear();
+                                int quitScore = (18 - i);
+                                score -= quitScore;
+                                using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
+                                {
+                                    sw.Write($"You quit early. You scored {score}/19. ");
+                                };
+                                newUser = false;
+                                returningUser = true;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("That was not correct. Enter any key to continue or press 2 to to return to the main menu.");
+                            score--;
+                            using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
+                            {
+                                sw.Write($"{i + 1}X:"); sw.Write($" {answer}. "); sw.Write($"You answered: {userAnswer}\r\n");
+                            };
+                            if (Console.ReadLine() == "2")
+                            {
+                                Console.Clear();
+                                int quitScore = (18 - i);
+                                score -= quitScore;
+                                using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
+                                {
+                                    sw.Write($"You quit early. You scored {score}/19. ");
+                                };
+                                newUser = false;
+                                returningUser = true;
+                                break;
+                            }
+                        }
+                    }
+                    endTime = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
+                    TimeSpan elapsed = DateTime.Parse(endTime).Subtract(DateTime.Parse(startTime));
+                    using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
+                    {
+                        sw.WriteLine($"Time elapsed: {elapsed}");
+                    };
+                }
+                else if (begin == "3")
+                {
+                    Console.CursorVisible = false;
+                    Console.Clear();
+                    Console.WriteLine("Below are the expected answers to the waveforms you will be asked to name during the test.\n\nPlease utilize the scroll bars to the top and right of your window to view the waveforms.\n\n[Warning]: Adjusting the window height or width will distort the images.\nReturning to the title menu will resolve the distortions.\n ");
+                    Console.WriteLine("(Press any key to return to the Title Menu...)\n");
+                    foreach (KeyValuePair<string, string> kvp in waves)
+                    {
+                        Console.SetBufferSize(240, 350);
+                        Console.WriteLine($"Waveform: " + kvp.Value);
+                        Console.WriteLine(kvp.Key);
 
-        //bool continueQuiz = true;
-        //while (continueQuiz == true)
-        //{
-        //    TitleMenu.WriteLogo();
-        //    Console.WriteLine("Would you like to begin your test? \n\nEnter 1 to begin, enter 2 to quit, enter 3 to see answer key.");
-        //    string? begin = Console.ReadLine();
+                    };
+                    Console.WriteLine("(Press any key to return to the Title Menu...)");
+                    Console.SetCursorPosition(0, 0);
+                    Console.ReadKey();
+                    Console.Clear();
+                    Console.CursorVisible = true;
 
-        //    if (begin == "1")
-        //    {
-        //        Console.Clear();
-        //        Console.WriteLine("For the following questions you will be presented with an image representing a telemetry waveform.\n\nThe images equate to a 10 second history of telemety monitoring.\n\nTo view the image in its entirety you will need to utilize the window scroll bar located at the bottom of the\napplication window.");
-        //        Console.WriteLine();
-        //        Console.WriteLine("Warning: Adjusting the window height or length will cause the images to distort. Following the prompts\nto restart the test will resolve the distortion.");
-        //        Console.WriteLine();
-        //        Console.WriteLine("(Press any key to continue...)");
-        //        Console.ReadKey();
-        //        Console.SetBufferSize(240, 66);
-        //        List<string> randomKey = new(waves.Keys);
+                }
+                else if (begin == "2")
+                {
+                    Environment.Exit(0);
+                }
+                else if (begin == "4")
+                {
 
-        //        var _random = new Random();
-        //        var randomKeyList = randomKey.OrderBy(item => _random.Next());
-        //        var questionKey = randomKeyList.ToArray();
-        //        for (int i = 0; i < questionKey.Length; i++)
-        //        {
-        //            Console.Clear();
-        //            Console.WriteLine(questionKey[i]);
-        //            Console.WriteLine();
-        //            Console.WriteLine("What rhythm does this represent?");
-        //            var answer = waves[questionKey[i]];
-        //            var userAnswer = Console.ReadLine();
-        //            if (String.IsNullOrEmpty(userAnswer) && i == (questionKey.Length - 1))
-        //            {
-        //                Console.WriteLine($"That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nYou have completed the last question, congratulations!\n\n");
-        //                Console.WriteLine("Enter any key to return to the main menu.");
-        //                Console.WriteLine();
-        //                Console.ReadKey();
-        //                Console.Clear();
-        //                break;
-        //            }
-        //            else if (String.IsNullOrEmpty(userAnswer))
-        //            {
-        //                Console.WriteLine("That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nEnter any key to continue or press 2 to to return to the main menu.");
-        //                if (Console.ReadLine() == "2")
-        //                {
-        //                    Console.Clear();
-        //                    break;
-        //                }
-        //            }
-        //            else if (i == (questionKey.Length - 1) && userAnswer.ToUpper() == answer.ToUpper())
-        //            {
-        //                Console.WriteLine("Correct!\n\nYou have completed the last question, congratulations!\n\n");
-        //                Console.WriteLine("Enter any key to return to the main menu.");
-        //                Console.WriteLine();
-        //                Console.ReadKey();
-        //                Console.Clear();
-        //                break;
-        //            }
+                }
+                else
+                {
+                    Console.WriteLine("That is not an option, please press enter to continue");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+            }
 
-        //            else if (i == (questionKey.Length - 1) && userAnswer.ToUpper() != answer.ToUpper())
-        //            {
-        //                Console.WriteLine("That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nYou have completed the last question, congratulations!\n\n");
-        //                Console.WriteLine("Enter any key to return to the main menu.");
-        //                Console.WriteLine();
-        //                Console.ReadKey();
-        //                Console.Clear();
-        //                break;
-        //            }
-        //            else if (userAnswer.ToUpper() == answer.ToUpper())
-        //            {
-        //                Console.WriteLine("Correct!");
-        //                Console.WriteLine("Enter any key to continue or press 2 to quit.");
-        //                if (Console.ReadLine() == "2")
-        //                {
-        //                    Console.Clear();
-        //                    break;
-        //                }
-        //            }
-        //            else if (userAnswer.ToUpper() != answer.ToUpper())
-        //            {
-        //                Console.WriteLine("That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nEnter any key to continue or press 2 to to return to the main menu.");
-        //                if (Console.ReadLine() == "2")
-        //                {
-        //                    Console.Clear();
-        //                    break;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                Console.WriteLine("That was not correct. Enter any key to continue or press 2 to to return to the main menu.");
-        //                if (Console.ReadLine() == "2")
-        //                {
-        //                    Console.Clear();
-        //                    break;
-        //                }
-        //            }
-        //        }
-        //    }
-        //    else if (begin == "3")
-        //    {
-        //        Console.CursorVisible = false;
-        //        Console.Clear();
-        //        Console.WriteLine("Below are the expected answers to the waveforms you will be asked to name during the test.\n\nPlease utilize the scroll bars to the top and right of your window to view the waveforms.\n\n[Warning]: Adjusting the window height or width will distort the images.\nReturning to the title menu will resolve the distortions.\n ");
-        //        Console.WriteLine("(Press any key to return to the Title Menu...)\n");
-        //        foreach (KeyValuePair<string, string> kvp in waves)
-        //        {
-        //            Console.SetBufferSize(240, 350);
-        //            Console.WriteLine($"Waveform: "+ kvp.Value);
-        //            Console.WriteLine(kvp.Key);
-
-        //        };
-        //        Console.WriteLine("(Press any key to return to the Title Menu...)");
-        //        Console.SetCursorPosition(0,0);
-        //        Console.Read();
-        //        Console.Clear();
-        //        Console.CursorVisible = true;
-
-        //    }
-        //    else if (begin == "2")
-        //    {
-        //        Environment.Exit(0);
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("That is not an option, please press enter to continue");
-        //        Console.ReadKey();
-        //        Console.Clear();
-        //    }
-        //}
+        }
     }
 }

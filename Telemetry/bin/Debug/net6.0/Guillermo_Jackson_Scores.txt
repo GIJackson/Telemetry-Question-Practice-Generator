@@ -1,0 +1,115 @@
+This test was taken on: 07/06/2022 at 04:12 PM
+1: Sinus Tachycardia. You did not give an answer.
+You quit early. You scored 0/19.
+This test was taken on: 07/06/2022 at 04:12 PM
+1: Paroxysmal Supraventricular Tachycardia. You answered: a
+2: Normal Sinus Rhythm. You answered: b
+3: Asystole. You answered: c
+4: Junctional Rhythm. You answered: d
+5: Second Degree AV Block. You answered: e
+6: First Degree AV Block. You answered: f
+7: Sinus Tachycardia. You answered: g
+8: Ventricular Tachycardia. You answered: h
+9: Atrial Fibrillation. You answered: i
+10: Idioventricular Rhythm. You answered: j
+11: Atrial Flutter. You answered: k
+12: Ventricular Tachycardia. You answered: l
+13: Ventricular Fibrillation. You answered: m
+14: Premature Ventricular Contraction. You answered: n
+15: Ventricular Tachycardia. You answered: o
+16: Third Degree AV Block. You answered: p
+17: Ventricular Fibrillation. You answered: q
+18: Sinus Bradycardia. You answered: r
+19: Second Degree AV Block. You answered: s
+You scored 0/19.
+This test was taken on: 07/06/2022 at 04:31 PM
+1: Ventricular Tachycardia. You answered: IT
+2: Paroxysmal Supraventricular Tachycardia. You answered: MATTER
+3: Sinus Tachycardia. You answered: WHAT
+4: Ventricular Tachycardia. You answered: I
+5: Premature Ventricular Contraction. You answered: TYPE
+6: Ventricular Fibrillation. You answered: HERE
+7: Junctional Rhythm. You answered: IM
+8: Atrial Flutter. You answered: JUST
+9: Sinus Bradycardia. You answered: TESTING
+10: Atrial Fibrillation. You answered: TO
+11: Second Degree AV Block. You answered: IF
+12: Idioventricular Rhythm. You answered: PROGRAM
+13: Ventricular Tachycardia. You answered: CAN
+14: Asystole. You answered: WHAT
+15: Second Degree AV Block. You answered: WANT
+16: First Degree AV Block. You answered: IT
+17: Normal Sinus Rhythm. You answered: TO
+18: Third Degree AV Block. You answered: DO
+19: Ventricular Fibrillation. You did not give an answer.
+You scored 0/19.
+Time elapsed: 00:02:00
+This test was taken on: 07/06/2022 at 04:35 PM
+1: First Degree AV Block. You did not give an answer.
+2: Ventricular Fibrillation. You did not give an answer.
+3: Junctional Rhythm. You did not give an answer.
+4: Atrial Fibrillation. You answered: 2
+You quit early. You scored 0/19. Time elapsed: 00:00:00
+This test was taken on: 07/06/2022 at 04:36 PM
+1: Paroxysmal Supraventricular Tachycardia. You answered: 1
+2: Asystole. You answered: 2
+3: Atrial Fibrillation. You answered: 3
+4: Premature Ventricular Contraction. You answered: 4
+5: Second Degree AV Block. You answered: 5
+6: Atrial Flutter. You answered: 6
+7: Ventricular Tachycardia. You answered: 7
+8: Ventricular Fibrillation. You answered: 8
+9: Ventricular Tachycardia. You answered: 9
+10: Ventricular Fibrillation. You answered: 10
+11: Ventricular Tachycardia. You answered: 11
+12: Second Degree AV Block. You answered: 12
+13: First Degree AV Block. You answered: 13
+14: Junctional Rhythm. You answered: 14
+15: Normal Sinus Rhythm. You answered: 15
+16: Sinus Bradycardia. You answered: 16
+17: Third Degree AV Block. You answered: 17
+18: Idioventricular Rhythm. You answered: 18
+19: Sinus Tachycardia. You answered: `9
+You scored 0/19. Time elapsed: 00:00:29
+This test was taken on: 07/06/2022 at 04:48 PM
+1O: Ventricular Fibrillation. You answered: ventricular fibrillation
+2O: Sinus Bradycardia. You answered: sinus bradycardia
+3O: Atrial Flutter. You answered: atrial flutter
+4X: First Degree AV Block. You answered: idioventricular rhythm
+5O: Asystole. You answered: asystole
+6X: Junctional Rhythm. You answered: idioventricular rhythm
+7O: Second Degree AV Block. You answered: second degree av block
+8O: Normal Sinus Rhythm. You answered: normal sinus rhythm
+9O: Ventricular Tachycardia. You answered: ventricular tachycardia
+10O: Ventricular Fibrillation. You answered: ventricular fibrillation
+11O: Ventricular Tachycardia. You answered: ventricular tachycardia
+12O: Paroxysmal Supraventricular Tachycardia. You answered: paroxysmal supraventricular tachycardia
+13O: Premature Ventricular Contraction. You answered: premature ventricular contraction
+14X: Third Degree AV Block. You answered: idioventricular rhythm
+15O: Ventricular Tachycardia. You answered: ventricular tachycardia
+16X: Second Degree AV Block. You answered: idioventricular rhythm
+17O: Idioventricular Rhythm. You answered: idioventricular rhythm
+18O: Sinus Tachycardia. You answered: sinus tachycardia
+19O: Atrial Fibrillation. You answered: atrial fibrillation
+You scored 15/19. Time elapsed: 00:02:39
+This test was taken on: 07/06/2022 at 04:54 PM
+1X: Junctional Rhythm. You answered: second degree av block
+2X: Ventricular Tachycardia. You answered: ventricular fibrillation
+3✓: Sinus Bradycardia. You answered: sinus bradycardia
+4✓: Second Degree AV Block. You answered: second degree av block
+5✓: Premature Ventricular Contraction. You answered: premature ventricular contraction
+6✓: Sinus Tachycardia. You answered: sinus tachycardia
+7✓: Ventricular Tachycardia. You answered: ventricular tachycardia
+8✓: Idioventricular Rhythm. You answered: idioventricular rhythm
+9X: First Degree AV Block. You answered: second degree av block
+10✓: Atrial Flutter. You answered: atrial flutter
+11✓: Ventricular Fibrillation. You answered: ventricular fibrillation
+12✓: Ventricular Tachycardia. You answered: ventricular tachycardia
+13✓: Atrial Fibrillation. You answered: atrial fibrillation
+14✓: Third Degree AV Block. You answered: third degree av block
+15✓: Paroxysmal Supraventricular Tachycardia. You answered: paroxysmal supraventricular tachycardia
+16✓: Normal Sinus Rhythm. You answered: normal sinus rhythm
+17✓: Asystole. You answered: asystole
+18X: Ventricular Fibrillation. You answered: ventricular tachycardia
+19✓: Second Degree AV Block. You answered: second degree av block
+You scored 15/19. Time elapsed: 00:02:13
