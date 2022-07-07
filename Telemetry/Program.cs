@@ -6,6 +6,8 @@ using System.Text;
 using System.IO;
 using System.Windows;
 using System.Runtime.InteropServices;
+using Microsoft.VisualBasic.FileIO;
+using System.Text.RegularExpressions;
 
 namespace Telemetry
 {
@@ -22,7 +24,7 @@ namespace Telemetry
             bool returningUser = false;
             bool newUser = false;
             int counter = 0;
-            //counter at 0 means the program just loaded up, used to check for intial save data
+            //counter at 0 means the program just loaded up, used to check for intial save data 
             //counter at 1 means there is a useable save file
             //counter at 2 means there is some corruption issues in nead of correcting or save file changing
             while (userOnFile == false)
@@ -588,15 +590,15 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                     string[] bornWithFirstAndLastName = userSaveData.Split('\r', '\n');
                     if (newUser == true && returningUser == false)
                     {
-                        Console.WriteLine($"\nWelcome, {bornWithFirstAndLastName[2]} {bornWithFirstAndLastName[4]}! Would you like to begin your test? \n\nEnter 1 to begin, enter 2 to quit, enter 3 to see answer key.");
+                        Console.WriteLine($"\nWelcome, {bornWithFirstAndLastName[2]} {bornWithFirstAndLastName[4]}! Would you like to begin your test? \n\nEnter 1 to begin, enter 2 to quit, enter 3 to see answer key, enter 4 to see your scores.");
                     }
                     else if (newUser == false && returningUser == true)
                     {
-                        Console.WriteLine($"\nWelcome back, {bornWithFirstAndLastName[2]} {bornWithFirstAndLastName[4]}! Would you like to begin your test? \n\nEnter 1 to begin, enter 2 to quit, enter 3 to see answer key.");
+                        Console.WriteLine($"\nWelcome back, {bornWithFirstAndLastName[2]} {bornWithFirstAndLastName[4]}! Would you like to begin your test? \n\nEnter 1 to begin, enter 2 to quit, enter 3 to see answer key, enter 4 to see your scores.");
                     }
                     else
                     {
-                        Console.WriteLine($"\nWelcome! Would you like to begin your test? \n\nEnter 1 to begin, enter 2 to quit, enter 3 to see answer key.");
+                        Console.WriteLine($"\nWelcome! Would you like to begin your test? \n\nEnter 1 to begin, enter 2 to quit, enter 3 to see answer key, enter 4 to see your scores.");
                     }
                 }
                 string? begin = Console.ReadLine();
@@ -804,14 +806,98 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                     Console.Clear();
                     Console.CursorVisible = true;
 
-                }
+                } 
                 else if (begin == "2")
                 {
                     Environment.Exit(0);
                 }
                 else if (begin == "4")
                 {
+                    Console.Clear();
+                    string[] bornWithFirstAndLastName;
+                    bool viewScores = false;
+                    using (StreamReader sr = new StreamReader(filePath))
+                    {
+                        var userSaveData = sr.ReadToEnd();
+                        bornWithFirstAndLastName = userSaveData.Split('\r', '\n');
+                    }
+                    Console.WriteLine($"Hello, {bornWithFirstAndLastName[2]}! Would you like to view your past results? (Yes/No/)\n");
+                    PLEASETYPECORRECTLY: var viewScoresBool = Console.ReadLine();
+                    if (viewScoresBool.ToUpper() == confirmNewUser.ToUpper())
+                    {
+                        viewScores = true;
+                    }
+                    else if (viewScoresBool.ToUpper() == notNewUser.ToUpper())
+                    {
+                        Console.Clear();
+                        continue;
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Invalid input\n\nWould you like to view your past results? (Yes/No)\n");
+                        goto PLEASETYPECORRECTLY;
+                    }
+                    if (viewScores == true)
+                    {
+                        string[] scoreDataArray;
+                        string scoreFile = $"{bornWithFirstAndLastName[2]}_{bornWithFirstAndLastName[4]}_Scores.txt";
+                        var datePattern = new Regex(@"(0[1-9]|1[012])[- \/.](0[1-9]|[12][0-9]|3[01])[- \/.](19|20)\d\d\s[a-zA-Z]+\s(0?[1-9]|1[0-2]):([0-5]\d)\s?((?:[Aa]|[Pp])\.?[Mm]\.?)");
+                        var scoresPattern = new Regex(@"You\sscored\s[0-9]+\/[0-9]+\.\sTime\selapsed:\s\d\d:\d\d:\d\d");
+                        Console.WriteLine("Please type in the number next to the date and time you want to see the score for.\n");
+                        using (StreamReader sr = new StreamReader(scoreFile))
+                        {
+                            //this is the list of all dates a test was taken
+                            List<Match> scoreDates = new List<Match>();
+                            List<Match> theScores = new List<Match>();
+                            //this is a single string of the entire file
+                            var scoreDataRead = sr.ReadToEnd();
+                            //this is an array of strings that represent each line of the file
+                            scoreDataArray = scoreDataRead.Split('\r').Select(scoreDataRead => scoreDataRead.Trim('\n')).ToArray();
+                            //this uses regex to find each date and time a test was taken
+                            MatchCollection dates = datePattern.Matches(scoreDataRead);
+                            MatchCollection scores = scoresPattern.Matches(scoreDataRead);
+                            //this adds those date and times to a list
+                            foreach (Match date in dates)
+                            {
+                                scoreDates.Add(date);
+                            }
+                            //this adds the scores found below each date to a list
+                            foreach (Match score in scores)
+                            {
+                                theScores.Add(score);
+                            }
+                            List<string> stringScoreDates = scoreDates.ConvertAll(x => x.ToString());
+                            List<string> stringTheScores = theScores.ConvertAll(x => x.ToString());
+                            //creates a dictionary using the dates as keys and the scores as values
+                            var scoreDateDic = stringScoreDates.Zip(stringTheScores, (k, v) => new { k, v })
+                            .ToDictionary(x => x.k, x => x.v);
+                            //linq query syntax
+                            var dateQuery =
+                                from sDate in scoreDates
+                                select sDate;
 
+                            int theNumberThatComesBeforeTheDate = 1;
+                            foreach (Match sDate in dateQuery)
+                            {
+                                Console.Write($"[{theNumberThatComesBeforeTheDate}]");
+                                Console.Write(sDate.Value);
+                                Console.Write("\n");
+                                theNumberThatComesBeforeTheDate++;
+                            };
+                            ////method syntax foreach (var sDate in scoreDates.Select((value, index) => new { value, index }))
+                            //    //Console.WriteLine($"{sDate.value}");
+                            int stringScoreDatesCount = stringScoreDates.Count;
+                            int whatsTheScore = Convert.ToInt32(Console.ReadLine());
+                            if (whatsTheScore <= stringScoreDatesCount && whatsTheScore !< 0)
+                            {
+                                Console.WriteLine(scoreDateDic[(stringScoreDates[whatsTheScore - 1])]);
+                            }
+                            Console.WriteLine("Press any key to return to the main menu.");
+                            Console.ReadKey();
+                            Console.Clear();
+                        }
+                    }
                 }
                 else
                 {
@@ -820,7 +906,6 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                     Console.Clear();
                 }
             }
-
         }
     }
 }
