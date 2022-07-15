@@ -821,7 +821,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                         var userSaveData = sr.ReadToEnd();
                         bornWithFirstAndLastName = userSaveData.Split('\r', '\n');
                     }
-                    Console.WriteLine($"Hello, {bornWithFirstAndLastName[2]}! Would you like to view your past results? (Yes/No/)\n");
+                    Console.WriteLine($"Hello, {bornWithFirstAndLastName[2]}! Would you like to view your past results? (Yes/No)\n");
                     PLEASETYPECORRECTLY: var viewScoresBool = Console.ReadLine();
                     if (viewScoresBool.ToUpper() == confirmNewUser.ToUpper())
                     {
@@ -888,8 +888,14 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                             ////method syntax foreach (var sDate in scoreDates.Select((value, index) => new { value, index }))
                             //    //Console.WriteLine($"{sDate.value}");
                             int stringScoreDatesCount = stringScoreDates.Count;
-                            int whatsTheScore = Convert.ToInt32(Console.ReadLine());
-                            if (whatsTheScore <= stringScoreDatesCount && whatsTheScore !< 0)
+                            string input = Console.ReadLine();
+                            while(int.TryParse(input, out int n) == false)
+                            {
+                                Console.WriteLine("Please type in the number next to the date and time you want to see the score for.\n");
+                                input = Console.ReadLine();
+                            }
+                            int whatsTheScore = Int32.Parse(input);
+                            if (whatsTheScore <= stringScoreDatesCount && whatsTheScore > -1)
                             {
                                 Console.WriteLine(scoreDateDic[(stringScoreDates[whatsTheScore - 1])]);
                             }
