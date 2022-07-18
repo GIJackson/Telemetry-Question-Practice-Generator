@@ -43,3 +43,4 @@ C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\obj\
 C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\Telemetry.pdb
 C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\Telemetry.genruntimeconfig.cache
 C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\obj\Debug\net6.0\ref\Telemetry.dll
+C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\bin\Debug\net6.0\UserSaveData.csv
