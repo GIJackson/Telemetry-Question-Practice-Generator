@@ -109,16 +109,28 @@ namespace Telemetry
         {
             using (StreamReader sr = new StreamReader(filePath))
             {
-                List<string> data = new List<string>();
-                string line;
+                List<string> data = new();
+                string onlyLine = "0,First Name,Last Name";
+                string? line;
                 while ((line = sr.ReadLine()) != null)
                 {
                     data.Add(line);
                 }
-                if (data[0] == "")
+                if (data[0] == "" || data[0] != onlyLine)
                 {
                     sr.Close();
                     File.Delete(filePath);
+                    return false;
+                }
+                if (data[0] == onlyLine && data.Count == 1)
+                {
+                    foreach (string item in data)
+                    {
+                        string[] split = item.Split(',');
+                        IDs.Add(Convert.ToInt32(split[0]));
+                        firstNames.Add(split[1]);
+                        lastNames.Add(split[2]);
+                    }
                     return false;
                 }
                 else
