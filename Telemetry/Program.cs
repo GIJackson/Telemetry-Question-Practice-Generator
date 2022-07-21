@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Text;
-using System.IO;
-using System.Windows;
-using System.Runtime.InteropServices;
-using Microsoft.VisualBasic.FileIO;
-using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Telemetry
 {
@@ -18,10 +13,8 @@ namespace Telemetry
             string OS = Environment.OSVersion.ToString();
             User user = new User();
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), "UserSaveData.csv");
-            string scoreFilePath = Path.Combine(Directory.GetCurrentDirectory(), $"{user._firstName}_{user._firstName}_{user._lastName}.csv");
             bool validSave = user.CSVSaveReader(filePath);
             bool continueQuiz = true;
-
             Console.Title = "Telemetry Testing";
             TitleMenu titleMenu = new();
             TitleMenu.WriteLogo();
@@ -32,8 +25,8 @@ namespace Telemetry
             else if (validSave == true)
             {
                 IEnumerable<string> names = user.firstNames.Zip(user.lastNames, (first, second) => first + " " + second);
-                Dictionary<int, string> users = user.IDs.Zip(names, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
-                Console.WriteLine("Please choose a user, or enter 0 to create a new user:\n");
+                Dictionary<int, string> users = user.userIDs.Zip(names, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
+                Console.WriteLine("Please choose a user by entering the corresponding number, or enter 0 to create a new user:\n");
                 for (int i = 1; i < users.Count; i++)
                 {
                     Console.WriteLine("[" + i + "]" + users[i]);
@@ -41,7 +34,7 @@ namespace Telemetry
                 string? input = Console.ReadLine();
                 while (int.TryParse(input, out int n) == false)
                 {
-                    Console.WriteLine("Please choose a user, or enter 0 to create a new user.");
+                    Console.WriteLine("Please choose a user by entering the corresponding number, or enter 0 to create a new user.");
                     input = Console.ReadLine();
                 }
                 if (Convert.ToInt32(input) == 0)
@@ -49,15 +42,16 @@ namespace Telemetry
                     user.CSVWriterNew(filePath);
                     if (user._name != null)
                     {
-                        users.Add(user._ID, user._name);
+                        users.Add(user._userID, user._name);
                     }
                     else
                     {
                         while (user._name == null)
                         {
                             user._name = $"{user._firstName} {user._lastName}";
+                            break;
                         }
-                        users.Add(user._ID, user._name);
+                        users.Add(user._userID, user._name);
                     }
 
                 }
@@ -66,6 +60,7 @@ namespace Telemetry
                     user.UserProperties(intput);
                 }
             }
+            string scoreFilePath = Path.Combine(Directory.GetCurrentDirectory(), $"{user._userID}_{user._firstName}_{user._lastName}.csv");
             Console.Clear();
             Dictionary<string, string> waves = new Dictionary<string, string>()
             {
@@ -364,6 +359,16 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                 string? begin = Console.ReadLine();
                 if (begin == "1")
                 {
+                    UserScores userScores = new();
+                    bool newFile = userScores.CSVNewScoreFile(scoreFilePath);
+                    if (newFile == true)
+                    {
+                        userScores._testID = 1;
+                    }
+                    else if (newFile == false)
+                    {
+                        userScores.TestID(scoreFilePath);
+                    }
                     Console.Clear();
                     Console.WriteLine("For the following questions you will be presented with an image representing a telemetry waveform.\n\nThe images equate to a 10 second history of telemety monitoring.\n\nTo view the image in its entirety you will need to utilize the window scroll bar located at the bottom of the\napplication window.\n");
                     Console.WriteLine("Warning: Adjusting the window height or length will cause the images to distort. Following the prompts\nto restart the test will resolve the distortion.\n");
@@ -373,152 +378,121 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                     {
                         Console.SetBufferSize(240, 66);
                     }
+                    userScores.user_ID = user._userID;
+                    userScores.CSVTestQuestion(scoreFilePath, true, false);
+                    string startTime = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt" +",");
+                    userScores._startTime = startTime;
+
+                    //List of Keys from waves Dictionary--the ASCII waveforms
                     List<string> randomKey = new(waves.Keys);
-                    var startTime = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
-                    int score = 19;
-                    var _random = new Random();
-                    var randomKeyList = randomKey.OrderBy(item => _random.Next());
-                    var questionKey = randomKeyList.ToArray();
+                    Random _random = new Random();
+
+                    //The above Keys in randomized order
+                    IOrderedEnumerable<string> randomKeyIEnumerable = randomKey.OrderBy(item => _random.Next());
+
+                    //Brought into an array because the above cannot be accessed by index
+                    string[] questionKey = randomKeyIEnumerable.ToArray();
+                    int totalQuestions = questionKey.Length;
+                    userScores._totalQuestions = totalQuestions;
                     for (int i = 0; i < questionKey.Length; i++)
                     {
                         Console.Clear();
+                        string? answer = waves[questionKey[i]];
+                        userScores.questionsAsked.Add(answer);
                         Console.WriteLine(questionKey[i]);
                         Console.WriteLine();
                         Console.WriteLine("What rhythm does this represent?");
-                        var answer = waves[questionKey[i]];
-                        var userAnswer = Console.ReadLine();
+                        string? userAnswer = Console.ReadLine();
+
                         if (String.IsNullOrEmpty(userAnswer) && i == (questionKey.Length - 1))
                         {
+                            userScores.questionsAnswered.Add("You did not give an answer");
                             Console.WriteLine($"That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nYou have completed the last question, congratulations!\n\n");
                             Console.WriteLine("Enter any key to return to the main menu.");
                             Console.WriteLine();
                             Console.ReadKey();
+                            userScores.CSVTestScore(false);
+                            userScores.CSVTestQuestion(scoreFilePath, false, true);
                             Console.Clear();
-                            score--;
-                            using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
-                            {
-                                sw.Write($"{i + 1}X:"); sw.Write($" {answer}. "); sw.Write($"You did not give an answer.\r\n");
-                                sw.Write($"You scored {score}/19. ");
-                            };
                             break;
                         }
                         else if (String.IsNullOrEmpty(userAnswer))
                         {
+                            userScores.questionsAnswered.Add("You did not give an answer");
                             Console.WriteLine("That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nEnter any key to continue or press 2 to to return to the main menu.");
-                            score--;
-                            using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
-                            {
-                                sw.Write($"{i + 1}X:"); sw.Write($" {answer}. "); sw.Write($"You did not give an answer.\r\n");
-                            };
+                            userScores.CSVTestScore(false);
                             if (Console.ReadLine() == "2")
                             {
+                                userScores.CSVTestQuestion(scoreFilePath, false, false);
                                 Console.Clear();
-                                int quitScore = (18 - i);
-                                score -= quitScore;
-                                using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
-                                {
-                                    sw.Write($"You quit early. You scored {score}/19. ");
-                                }
                                 break;
                             }
                         }
                         else if (i == (questionKey.Length - 1) && userAnswer.ToUpper() == answer.ToUpper())
                         {
+                            userScores.questionsAnswered.Add(userAnswer);
                             Console.WriteLine("Correct!\n\nYou have completed the last question, congratulations!\n\n");
                             Console.WriteLine("Enter any key to return to the main menu.");
                             Console.WriteLine();
                             Console.ReadKey();
+                            userScores.CSVTestScore(true);
+                            userScores.CSVTestQuestion(scoreFilePath, false, true);
                             Console.Clear();
-                            using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
-                            {
-                                sw.Write($"{i + 1}✓:"); sw.Write($" {answer}. "); sw.Write($"You answered: {userAnswer}\r\n");
-                                sw.Write($"You scored {score}/19. ");
-                            };
                             break;
                         }
-
                         else if (i == (questionKey.Length - 1) && userAnswer.ToUpper() != answer.ToUpper())
                         {
+                            userScores.questionsAnswered.Add(userAnswer);
                             Console.WriteLine("That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nYou have completed the last question, congratulations!\n\n");
                             Console.WriteLine("Enter any key to return to the main menu.");
                             Console.WriteLine();
                             Console.ReadKey();
+                            userScores.CSVTestScore(false);
+                            userScores.CSVTestQuestion(scoreFilePath, false, true);
                             Console.Clear();
-                            score--;
-                            using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
-                            {
-                                sw.Write($"{i + 1}X:"); sw.Write($" {answer}. "); sw.Write($"You answered: {userAnswer}\r\n");
-                                sw.Write($"You scored {score}/19. ");
-                            };
                             break;
                         }
                         else if (userAnswer.ToUpper() == answer.ToUpper())
                         {
+                            userScores.questionsAnswered.Add(userAnswer);
                             Console.WriteLine("Correct!");
                             Console.WriteLine("Enter any key to continue or press 2 to quit.");
-                            using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
-                            {
-                                sw.Write($"{i + 1}✓:"); sw.Write($" {answer}. "); sw.Write($"You answered: {userAnswer}\r\n");
-                            };
+                            userScores.CSVTestScore(true);
                             if (Console.ReadLine() == "2")
                             {
+                                userScores.CSVTestQuestion(scoreFilePath, false, false);
                                 Console.Clear();
-                                int quitScore = (18 - i);
-                                score -= quitScore;
-                                using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
-                                {
-                                    sw.Write($"You quit early. You scored {score}/19. ");
-                                };
                                 break;
                             }
                         }
                         else if (userAnswer.ToUpper() != answer.ToUpper())
                         {
+                            userScores.questionsAnswered.Add(userAnswer);
                             Console.WriteLine("That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nEnter any key to continue or press 2 to to return to the main menu.");
-                            score--;
-                            using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
-                            {
-                                sw.Write($"{i + 1}X:"); sw.Write($" {answer}. "); sw.Write($"You answered: {userAnswer}\r\n");
-                            };
+                            userScores.CSVTestScore(false);
                             if (Console.ReadLine() == "2")
                             {
+                                userScores.CSVTestQuestion(scoreFilePath, false, false);
                                 Console.Clear();
-                                int quitScore = (18 - i);
-                                score -= quitScore;
-                                using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
-                                {
-                                    sw.Write($"You quit early. You scored {score}/19. ");
-                                }
                                 break;
                             }
                         }
                         else
                         {
-                            Console.WriteLine("That was not correct. Enter any key to continue or press 2 to to return to the main menu.");
-                            score--;
-                            using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
-                            {
-                                sw.Write($"{i + 1}X:"); sw.Write($" {answer}. "); sw.Write($"You answered: {userAnswer}\r\n");
-                            };
+                            userScores.questionsAnswered.Add("An error has occured.");
+                            Console.WriteLine("An error as occured. At this time your score will be deducted one point. Enter any key to continue or press 2 to to return to the main menu.");
+                            userScores.CSVTestScore(false);
                             if (Console.ReadLine() == "2")
                             {
+                                userScores.CSVTestQuestion(scoreFilePath, false, false);
                                 Console.Clear();
-                                int quitScore = (18 - i);
-                                score -= quitScore;
-                                using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
-                                {
-                                    sw.Write($"You quit early. You scored {score}/19. ");
-                                }
                                 break;
                             }
                         }
                     }
-                    var endTime = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
-                    TimeSpan elapsed = DateTime.Parse(endTime).Subtract(DateTime.Parse(startTime));
-                    using (StreamWriter sw = new StreamWriter(scoreFilePath, true))
-                    {
-                        sw.WriteLine($"Time elapsed: {elapsed}");
-                    };
+                    string endTime = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
+                    userScores._endTime = endTime;
+                    userScores.CSVDateTimeElapsed(scoreFilePath);
                 }
                 else if (begin == "3")
                 {
@@ -551,14 +525,8 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                 else if (begin == "4")
                 {
                     Console.Clear();
-                    string[] bornWithFirstAndLastName;
                     bool viewScores = false;
-                    using (StreamReader sr = new StreamReader(filePath))
-                    {
-                        var userSaveData = sr.ReadToEnd();
-                        bornWithFirstAndLastName = userSaveData.Split('\r', '\n');
-                    }
-                    Console.WriteLine($"Hello, {bornWithFirstAndLastName[2]}! Would you like to view your past results? (Yes/No)\n");
+                    Console.WriteLine($"Hello, {user._firstName}! Would you like to view your past results? (Yes/No)");
                     string? viewScoresBool = Console.ReadLine();
                     while (string.IsNullOrWhiteSpace(viewScoresBool) == true)
                     {
@@ -566,16 +534,17 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                         Console.WriteLine("Invalid input\n\nWould you like to view your past results? (Yes/No)\n");
                         viewScoresBool = Console.ReadLine();
                     }
-                    while (string.IsNullOrWhiteSpace(viewScoresBool) == false)
+                    while (viewScores == false && viewScoresBool != null)
                     {
                         if (viewScoresBool.ToUpper() == "YES")
                         {
                             viewScores = true;
+                            Console.Clear();
                         }
                         else if (viewScoresBool.ToUpper() == "NO")
                         {
                             Console.Clear();
-                            continue;
+                            break;
                         }
                         else
                         {
@@ -584,71 +553,12 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                             viewScoresBool = Console.ReadLine();
                         }
                     }
-                    if (viewScores == true)
+                    while (viewScores == true)
                     {
-                        string[] scoreDataArray;
-                        string scoreFile = $"{bornWithFirstAndLastName[2]}_{bornWithFirstAndLastName[4]}_Scores.txt";
-                        var datePattern = new Regex(@"(0[1-9]|1[012])[- \/.](0[1-9]|[12][0-9]|3[01])[- \/.](19|20)\d\d\s[a-zA-Z]+\s(0?[1-9]|1[0-2]):([0-5]\d)\s?((?:[Aa]|[Pp])\.?[Mm]\.?)");
-                        var scoresPattern = new Regex(@"You\sscored\s[0-9]+\/[0-9]+\.\sTime\selapsed:\s\d\d:\d\d:\d\d");
-                        Console.WriteLine("Please type in the number next to the date and time you want to see the score for.\n");
-                        using (StreamReader sr = new StreamReader(scoreFile))
-                        {
-                            //this is the list of all dates a test was taken
-                            List<Match> scoreDates = new List<Match>();
-                            List<Match> theScores = new List<Match>();
-                            //this is a single string of the entire file
-                            var scoreDataRead = sr.ReadToEnd();
-                            //this is an array of strings that represent each line of the file
-                            scoreDataArray = scoreDataRead.Split('\r').Select(scoreDataRead => scoreDataRead.Trim('\n')).ToArray();
-                            //this uses regex to find each date and time a test was taken
-                            MatchCollection dates = datePattern.Matches(scoreDataRead);
-                            MatchCollection scores = scoresPattern.Matches(scoreDataRead);
-                            //this adds those date and times to a list
-                            foreach (Match date in dates)
-                            {
-                                scoreDates.Add(date);
-                            }
-                            //this adds the scores found below each date to a list
-                            foreach (Match score in scores)
-                            {
-                                theScores.Add(score);
-                            }
-                            List<string> stringScoreDates = scoreDates.ConvertAll(x => x.ToString());
-                            List<string> stringTheScores = theScores.ConvertAll(x => x.ToString());
-                            //creates a dictionary using the dates as keys and the scores as values
-                            var scoreDateDic = stringScoreDates.Zip(stringTheScores, (k, v) => new { k, v })
-                            .ToDictionary(x => x.k, x => x.v);
-                            //linq query syntax
-                            var dateQuery =
-                                from sDate in scoreDates
-                                select sDate;
-
-                            int theNumberThatComesBeforeTheDate = 1;
-                            foreach (Match sDate in dateQuery)
-                            {
-                                Console.Write($"[{theNumberThatComesBeforeTheDate}]");
-                                Console.Write(sDate.Value);
-                                Console.Write("\n");
-                                theNumberThatComesBeforeTheDate++;
-                            };
-                            ////method syntax foreach (var sDate in scoreDates.Select((value, index) => new { value, index }))
-                            //    //Console.WriteLine($"{sDate.value}");
-                            int stringScoreDatesCount = stringScoreDates.Count;
-                            string? input = Console.ReadLine();
-                            while(int.TryParse(input, out int n) == false)
-                            {
-                                Console.WriteLine("Please type in the number next to the date and time you want to see the score for.\n");
-                                input = Console.ReadLine();
-                            }
-                            int whatsTheScore = Int32.Parse(input);
-                            if (whatsTheScore <= stringScoreDatesCount && whatsTheScore > -1)
-                            {
-                                Console.WriteLine(scoreDateDic[(stringScoreDates[whatsTheScore - 1])]);
-                            }
-                            Console.WriteLine("Press any key to return to the main menu.");
-                            Console.ReadKey();
-                            Console.Clear();
-                        }
+                        ScoreLinq scoreLinq = new ScoreLinq();
+                        scoreLinq.AscendingDateLinq(scoreLinq.CSVReadLine(scoreFilePath));
+                        Console.ReadKey();
+                        Console.Clear();
                     }
                 }
                 else

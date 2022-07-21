@@ -8,9 +8,9 @@ namespace Telemetry
 {
     public class User
     {
-        public int _ID;
+        public int _userID;
         public string? _firstName, _lastName, _name;
-        public List<int> IDs = new();
+        public List<int> userIDs = new();
         public List<string> firstNames = new();
         public List<string> lastNames = new();
 
@@ -56,12 +56,12 @@ namespace Telemetry
                     {
                         if (yes.ToUpper() == "YES")
                         {
-                            _ID = IDs.Count;
+                            _userID = userIDs.Count;
                             _firstName = input1;
                             _lastName = input2;
                             _name = $"{input1} {input2}";
-                            sw.WriteLine(_ID + "," + _firstName + "," + _lastName);
-                            CSVAddNewUserToLists(_ID, _firstName, _lastName);
+                            sw.WriteLine(_userID + "," + _firstName + "," + _lastName);
+                            CSVAddNewUserToLists(_userID, _firstName, _lastName);
                             newUser = false;
                             return;
                         }
@@ -95,18 +95,23 @@ namespace Telemetry
         }
         public void CSVAddNewUserToLists(int newID, string newFirstName, string newLastName)
         {
-            IDs.Add(newID);
+            userIDs.Add(newID);
             firstNames.Add(newFirstName);
             lastNames.Add(newLastName);
         }
         public void UserProperties(int intput)
         {
+            _userID = userIDs[intput];
             _firstName = firstNames[intput];
             _lastName = lastNames[intput];
             _name = $"{_firstName} {_lastName}";
         }
         public bool CSVSaveReader(string filePath)
         {
+            if (!File.Exists(filePath))
+            {
+                return false;
+            }
             using (StreamReader sr = new StreamReader(filePath))
             {
                 List<string> data = new();
@@ -127,7 +132,7 @@ namespace Telemetry
                     foreach (string item in data)
                     {
                         string[] split = item.Split(',');
-                        IDs.Add(Convert.ToInt32(split[0]));
+                        userIDs.Add(Convert.ToInt32(split[0]));
                         firstNames.Add(split[1]);
                         lastNames.Add(split[2]);
                     }
@@ -138,7 +143,7 @@ namespace Telemetry
                     foreach (string item in data)
                     {
                         string[] split = item.Split(',');
-                        IDs.Add(Convert.ToInt32(split[0]));
+                        userIDs.Add(Convert.ToInt32(split[0]));
                         firstNames.Add(split[1]);
                         lastNames.Add(split[2]);
                     }
