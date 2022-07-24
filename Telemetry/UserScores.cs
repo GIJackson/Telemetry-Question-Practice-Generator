@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Telemetry
 {
@@ -10,12 +11,12 @@ namespace Telemetry
     public class UserScores
     {
         public int _testID, user_ID, _score, _totalQuestions;
-        public string? _startTime, _endTime;
+        public string? _startTime, _endTime, _startDate;
         TimeSpan? _elapsed;
         public List<string> questionsAsked = new();
         public List<string> questionsAnswered = new();
         public List<string> correctOrIncorrect = new();
-        string firstLine = "0,0,Test Questions,Test Answers, Correct or Incorrect,Test Completed,Score,Total Questions,Date and Time,Time Elapsed";
+        string firstLine = "0,0,Test Questions,Test Answers, Correct or Incorrect,Test Completed,Score,Total Questions,Date,Time,Time Elapsed";
 
         public UserScores()
         {
@@ -34,7 +35,7 @@ namespace Telemetry
             else if (File.Exists(scoreFilePath))
             {
                 string [] lines = File.ReadAllLines(scoreFilePath);
-                if (lines[0] != firstLine || lines[0] == "")
+                if (lines.Length == 0)
                 {
                     using (StreamWriter sw = new(scoreFilePath, false))
                     {
@@ -98,7 +99,7 @@ namespace Telemetry
         {
             if (_endTime != null && _startTime != null)
             {
-                _elapsed = DateTime.Parse(_endTime).Subtract(DateTime.Parse(_startTime));
+                _elapsed = DateTime.ParseExact(_endTime, "yyyy'-'MM'-'dd HH':'mm':'ss'Z'", null).Subtract(DateTime.ParseExact(_startTime, "yyyy'-'MM'-'dd HH':'mm':'ss'Z'", null));
             }
             else
             {
@@ -106,12 +107,12 @@ namespace Telemetry
                 string nullElapsed = "The total time of the test could not be recorded.";
                 using (StreamWriter sw = new(scoreFilePath, true))
                 {
-                    sw.Write(_startTime); sw.Write(nullElapsed);
+                    sw.Write($"{_startDate},"); sw.Write($"{_startTime},"); sw.WriteLine(nullElapsed);
                 }
             }
             using (StreamWriter sw = new(scoreFilePath, true))
             {
-                sw.Write(_startTime);sw.WriteLine(_elapsed);
+                sw.Write($"{_startDate},"); sw.Write($"{_startTime},"); sw.WriteLine(_elapsed);
             }
         }
     }

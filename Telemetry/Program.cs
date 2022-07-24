@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Telemetry
 {
@@ -15,6 +16,9 @@ namespace Telemetry
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), "UserSaveData.csv");
             bool validSave = user.CSVSaveReader(filePath);
             bool continueQuiz = true;
+            string dateTimeNowu = DateTime.Now.ToString("u");
+            DateTime myDate = DateTime.Parse(dateTimeNowu);
+            Console.Write(myDate.ToLongDateString() + " "); Console.WriteLine(myDate.ToShortTimeString());
             Console.Title = "Telemetry Testing";
             TitleMenu titleMenu = new();
             TitleMenu.WriteLogo();
@@ -32,7 +36,7 @@ namespace Telemetry
                     Console.WriteLine("[" + i + "]" + users[i]);
                 }
                 string? input = Console.ReadLine();
-                while (int.TryParse(input, out int n) == false)
+                while (int.TryParse(input, out int n) == false || n > users.Count - 1 || n < 0)
                 {
                     Console.WriteLine("Please choose a user by entering the corresponding number, or enter 0 to create a new user.");
                     input = Console.ReadLine();
@@ -353,11 +357,21 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
             };
             while (continueQuiz == true)
             {
-                Console.WriteLine(DateTime.Now.ToString("MM/dd/yyyy hh:mm tt"));
+                if (!File.Exists(scoreFilePath))
+                {
+                    File.Create(scoreFilePath).Close();
+                }
+                Console.Write(myDate.ToLongDateString() + " "); Console.WriteLine(myDate.ToShortTimeString());
                 TitleMenu.WriteLogo();
-                Console.WriteLine($"Hey, {user._firstName}!\n\nWould you like to begin your test? \n\nEnter 1 to begin, enter 2 to quit, enter 3 to see answer key.");
+                Console.WriteLine($"Hey, {user._firstName}!\n\nWould you like to begin your test? \n\nEnter 1 to begin, enter 2 to see answer key, enter 3 to view past scores, or enter 0 to quit..");
                 string? begin = Console.ReadLine();
-                if (begin == "1")
+
+
+                if (begin == "0")
+                {
+                    Environment.Exit(0);
+                }
+                else if (begin == "1")
                 {
                     UserScores userScores = new();
                     bool newFile = userScores.CSVNewScoreFile(scoreFilePath);
@@ -380,7 +394,9 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                     }
                     userScores.user_ID = user._userID;
                     userScores.CSVTestQuestion(scoreFilePath, true, false);
-                    string startTime = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt" +",");
+                    string startDate = DateTime.Now.ToString("u");
+                    string startTime = DateTime.Now.ToString("u");
+                    userScores._startDate = startDate;
                     userScores._startTime = startTime;
 
                     //List of Keys from waves Dictionary--the ASCII waveforms
@@ -490,11 +506,11 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                             }
                         }
                     }
-                    string endTime = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
+                    string endTime = DateTime.Now.ToString("u");
                     userScores._endTime = endTime;
                     userScores.CSVDateTimeElapsed(scoreFilePath);
                 }
-                else if (begin == "3")
+                else if (begin == "2")
                 {
                     Console.CursorVisible = false;
                     Console.Clear();
@@ -518,11 +534,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                     Console.CursorVisible = true;
 
                 } 
-                else if (begin == "2")
-                {
-                    Environment.Exit(0);
-                }
-                else if (begin == "4")
+                else if (begin == "3")
                 {
                     Console.Clear();
                     bool viewScores = false;
@@ -556,8 +568,115 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                     while (viewScores == true)
                     {
                         ScoreLinq scoreLinq = new ScoreLinq();
-                        scoreLinq.AscendingDateLinq(scoreLinq.CSVReadLine(scoreFilePath));
-                        Console.ReadKey();
+                        bool nullFile = scoreLinq.CSVNullFileChecker(scoreFilePath);
+                        if (nullFile == false)
+                        {
+                            Console.WriteLine("What would you like to view? Type in the corresponding number for your selection.\n[0] Quit\n[1]Tests and Scores\n[2]Tests and Questions\n[3]Everything Possible");
+                        }
+                        else if (nullFile == true)
+                        {
+                            Console.WriteLine("Woah! Looks like you need to take a test first!\n\nPress any key to return to the main menu...");
+                            Console.ReadKey();
+                            Console.Clear();
+                            break;
+                        }
+                        string? viewChoice = Console.ReadLine();
+                        while(int.TryParse(viewChoice, out int s) == false)
+                        {
+                            Console.WriteLine("Input not recognized, please try again.");
+                            viewChoice = Console.ReadLine();
+                        }
+                        int intViewChoice = Convert.ToInt32(viewChoice);
+                        switch (intViewChoice)
+                        {
+                            case 0:
+                                viewScores = false;
+                                break;
+                            case 1:
+                                Console.WriteLine("In what order would you like to view your scores?\n[0]Quit\n[1]Date Ascending\n[2]Date Descnding\n[3]Score Ascending\n[4]Score Descending\n[5]Total Time Ascending\n[6]Total Time Descending");
+                                string? linqOrder1 = Console.ReadLine();
+                                if (int.TryParse(linqOrder1, out int s1) == false)
+                                {
+                                    Console.WriteLine("Input not recognized, please try again.");
+                                    linqOrder1 = Console.ReadLine();
+                                }
+                                int intLinqOrder1 = Convert.ToInt32(linqOrder1);
+                                switch (intLinqOrder1)
+                                {
+                                    case 0:
+                                        viewScores = false;
+                                        break;
+                                    case 1:
+                                        viewScores = false;
+                                        scoreLinq.AscendingDateLinq(scoreLinq.CSVReadLine(scoreFilePath));
+                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        Console.ReadKey();
+                                        break;
+                                    case 2:
+                                        viewScores = false;
+                                        scoreLinq.DescendingScoreLinq(scoreLinq.CSVReadLine(scoreFilePath));
+                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        break;
+                                    case 3:
+                                        viewScores = false;
+                                        scoreLinq.AscendingScoreLinq(scoreLinq.CSVReadLine(scoreFilePath));
+                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        break;
+                                    case 4:
+                                        viewScores = false;
+                                        scoreLinq.DescendingScoreLinq(scoreLinq.CSVReadLine(scoreFilePath));
+                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        break;
+                                    case 5:
+                                        viewScores = false;
+                                        scoreLinq.AscendingTimeLinq(scoreLinq.CSVReadLine(scoreFilePath));
+                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        break;
+                                    case 6:
+                                        viewScores = false;
+                                        scoreLinq.DescendingTimeLinq(scoreLinq.CSVReadLine(scoreFilePath));
+                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
+                            case 2:
+                                Console.WriteLine("In what order would you like to view your tests?\n[0]Quit\n[1]Scores Ascending\n[2]Scores Descending");
+                                string? linqOrder2 = Console.ReadLine();
+                                if (int.TryParse(linqOrder2, out int s2) == false)
+                                {
+                                    Console.WriteLine("Input not recognized, please try again.");
+                                    linqOrder2 = Console.ReadLine();
+                                }
+                                int intLinqOrder2 = Convert.ToInt32(linqOrder2);
+                                switch (intLinqOrder2)
+                                {
+                                    case 0:
+                                        viewScores = false;
+                                        break;
+                                    case 1:
+                                        scoreLinq.AscendingScoreWithQuestionsLinq(scoreLinq.CSVReadLine(scoreFilePath));
+                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        Console.ReadKey();
+                                        break;
+                                    case 2:
+                                        scoreLinq.DescendingScoreWithQuestionsLinq(scoreLinq.CSVReadLine(scoreFilePath));
+                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        Console.ReadKey();
+                                        break;
+                                }
+                                break;
+                            case 3:
+                                Console.WriteLine("Well here you go!\n\nPlease keep in mind this may be long, so utilization of vertical scroll bars may be neccessary.");
+                                Thread.Sleep(3000);
+                                scoreLinq.AllOfItLinq(scoreLinq.CSVReadLine(scoreFilePath), user);
+                                Console.WriteLine("Press any key to return to the main menu...");
+                                Console.ReadKey();
+                                break;
+                            default:
+                                break;
+                        }
                         Console.Clear();
                     }
                 }
