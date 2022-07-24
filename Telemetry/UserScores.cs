@@ -99,7 +99,11 @@ namespace Telemetry
         {
             if (_endTime != null && _startTime != null)
             {
-                _elapsed = DateTime.ParseExact(_endTime, "yyyy'-'MM'-'dd HH':'mm':'ss'Z'", null).Subtract(DateTime.ParseExact(_startTime, "yyyy'-'MM'-'dd HH':'mm':'ss'Z'", null));
+                string endTime = DateTime.ParseExact(_endTime, "yyyy'-'MM'-'dd HH':'mm':'ss'Z'", null).ToString("HH:mm:ss");
+                string startTime = DateTime.ParseExact(_startTime, "yyyy'-'MM'-'dd HH':'mm':'ss'Z'", null).ToString("HH:mm:ss");
+                DateTime endTimeParse = DateTime.ParseExact(endTime, "HH:mm:ss", null);
+                DateTime startTimeParse = DateTime.ParseExact(endTime, "HH:mm:ss", null);
+                _elapsed = endTimeParse.Subtract(startTimeParse);
             }
             else
             {
@@ -110,6 +114,7 @@ namespace Telemetry
                     sw.Write($"{_startDate},"); sw.Write($"{_startTime},"); sw.WriteLine(nullElapsed);
                 }
             }
+
             using (StreamWriter sw = new(scoreFilePath, true))
             {
                 sw.Write($"{_startDate},"); sw.Write($"{_startTime},"); sw.WriteLine(_elapsed);

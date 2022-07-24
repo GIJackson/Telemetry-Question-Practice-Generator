@@ -12,7 +12,7 @@ namespace Telemetry
         public static void Main()
         {
             string OS = Environment.OSVersion.ToString();
-            User user = new User();
+            User user = new();
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), "UserSaveData.csv");
             bool validSave = user.CSVSaveReader(filePath);
             bool continueQuiz = true;
@@ -66,295 +66,10 @@ namespace Telemetry
             }
             string scoreFilePath = Path.Combine(Directory.GetCurrentDirectory(), $"{user._userID}_{user._firstName}_{user._lastName}.csv");
             Console.Clear();
-            Dictionary<string, string> waves = new Dictionary<string, string>()
-            {
-                {@"              x                                          x                                          x                                          x                                          x
-              xx                                         xx                                         xx                                         xx                                         xx
-              x x                                        x x                                        x x                                        x x                                        x x
-              x  x                                       x  x                                       x  x                                       x  x                                       x  x
-              x  x                                       x  x                                       x  x                                       x  x                                       x  x
-              x  x                                       x  x                                       x  x                                       x  x                                       x  x
-              x  x         xx                            x  x         xx                            x  x         xx                            x  x         xx                            x  x         xx
-   xx         x  x        x  x                xx         x  x        x  x                xx         x  x        x  x                xx         x  x        x  x                xx         x  x        x  x
-  x  x        x   x      x    x              x  x        x   x      x    x              x  x        x   x      x    x              x  x        x   x      x    x              x  x        x   x      x    x
-xx    xxxxx   x   x     x      xxxxxxxxxxxxxx    xxxxx   x   x     x      xxxxxxxxxxxxxx    xxxxx   x   x     x      xxxxxxxxxxxxxx    xxxxx   x   x     x      xxxxxxxxxxxxxx    xxxxx   x   x     x      xxxxxxxxxxxxx
-──────────xx──x───x────x─────────────────────────────xx──x───x────x─────────────────────────────xx──x───x────x─────────────────────────────xx──x───x────x─────────────────────────────xx──x───x────x────────────────────
-           x  x   xx  x                               x  x   xx  x                               x  x   xx  x                               x  x   xx  x                               x  x   xx  x
-           x x     x xx                               x x     x xx                               x x     x xx                               x x     x xx                               x x     x xx
-            xx     x x                                 xx     x x                                 xx     x x                                 xx     x x                                 xx     x x
-            x      x x                                 x      x x                                 x      x x                                 x      x x                                 x      x x
-                   xx                                         xx                                         xx                                         xx                                         xx
-                   xx                                         xx                                         xx                                         xx                                         xx
-                   x                                          x                                          x                                          x                                          x", "Sinus Bradycardia" },
-                {@"              x                                x                               x                               x                                x                                x                               x
-              xx                               xx                              xx                              xx                               xx                               xx                              xx
-              x x                              x x                             x x                             x x                              x x                              x x                             x x
-              x  x                             x  x                            x  x                            x  x                             x  x                             x  x                            x  x
-              x  x                             x  x                            x  x                            x  x                             x  x                             x  x                            x  x
-              x  x                             x  x                            x  x                            x  x                             x  x                             x  x                            x  x
-              x  x         xx                  x  x         xx                 x  x         xx                 x  x         xx                  x  x         xx                  x  x         xx                 x  x
-   xx         x  x        x  x      xx         x  x        x  x     xx         x  x        x  x     xx         x  x        x  x      xx         x  x        x  x      xx         x  x        x  x     xx         x  x
-  x  x        x   x      x    x    x  x        x   x      x    x   x  x        x   x      x    x   x  x        x   x      x    x    x  x        x   x      x    x    x  x        x   x      x    x   x  x        x   x
-xx    xxxxx   x   x     x      xxxx    xxxxx   x   x     x      xxx    xxxxx   x   x     x      xxx    xxxxx   x   x     x      xxxx    xxxxx   x   x     x      xxxx    xxxxx   x   x     x      xxx    xxxxx   x   x
-──────────xx──x───x────x───────────────────xx──x───x────x──────────────────xx──x───x────x──────────────────xx──x───x────x───────────────────xx──x───x────x───────────────────xx──x───x────x──────────────────xx──x───x──
-           x  x   xx  x                     x  x   xx  x                    x  x   xx  x                    x  x   xx  x                     x  x   xx  x                     x  x   xx  x                    x  x   xx
-           x x     x xx                     x x     x xx                    x x     x xx                    x x     x xx                     x x     x xx                     x x     x xx                    x x     x
-            xx     x x                       xx     x x                      xx     x x                      xx     x x                       xx     x x                       xx     x x                      xx     x
-            x      x x                       x      x x                      x      x x                      x      x x                       x      x x                       x      x x                      x      x
-                   xx                               xx                              xx                              xx                               xx                               xx                              xx
-                   xx                               xx                              xx                              xx                               xx                               xx                              xx
-                   x                                x                               x                               x                                x                                x                               x", "Normal Sinus Rhythm" },
-                {@"               x                     x                     x                     x                     x                     x                     x                     x                     x                     x
-               x                     x                     x                     x                     x                     x                     x                     x                     x                     x
-               x                     x                     x                     x                     x                     x                     x                     x                     x                     x
-              x x                   x x                   x x                   x x                   x x                   x x                   x x                   x x                   x x                   x x
-              x x                   x x                   x x                   x x                   x x                   x x                   x x                   x x                   x x                   x x
-              x x                   x x                   x x                   x x                   x x                   x x                   x x                   x x                   x x                   x x
-              x x                   x x                   x x                   x x                   x x                   x x                   x x                   x x                   x x                   x x
-  x     x     x  x      x     x     x  x      x     x     x  x      x     x     x  x      x     x     x  x      x     x     x  x      x     x     x  x      x     x     x  x      x     x     x  x      x     x     x  x
- xxx   xxx    x  x     xxx   xxx    x  x     xxx   xxx    x  x     xxx   xxx    x  x     xxx   xxx    x  x     xxx   xxx    x  x     xxx   xxx    x  x     xxx   xxx    x  x     xxx   xxx    x  x     xxx   xxx    x  x
- x x   x x    x  x     x x   x x    x  x     x x   x x    x  x     x x   x x    x  x     x x   x x    x  x     x x   x x    x  x     x x   x x    x  x     x x   x x    x  x     x x   x x    x  x     x x   x x    x  x
-x───xxx───x───x───x───x───xxx───x───x───x───x───xxx───x───x───x───x───xxx───x───x───x───x───xxx───x───x───x───x───xxx───x───x───x───x───xxx───x───x───x───x───xxx───x───x───x───x───xxx───x───x───x───x───xxx───x───x───
-     x    x   x   x   x    x    x   x   x   x    x    x   x   x   x    x    x   x   x   x    x    x   x   x   x    x    x   x   x   x    x    x   x   x   x    x    x   x   x   x    x    x   x   x   x    x    x   x
-          x   x   x   x         x   x   x   x         x   x   x   x         x   x   x   x         x   x   x   x         x   x   x   x         x   x   x   x         x   x   x   x         x   x   x   x         x   x
-           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x
-           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x
-           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x     x x           x x
-            x       x             x       x             x       x             x       x             x       x             x       x             x       x             x       x             x       x             x
-                    x             x       x                     x                     x                     x                     x                     x                     x                     x
-                    x                     x                     x                     x                     x                     x                     x                     x                     x", "Sinus Tachycardia" },
-                {@"              x                                            x                                       x                  x                 x                                        x                                     x
-             x x                                          x x                                     x x                x x               x x                                      x x                                   x x
-             x x                                          x x                                     x x                x x               x x                                      x x                                   x x
-             x x                                          x x                                     x x                x x               x x                                      x x                                   x x
-             x x                                          x x                                     x x                x x               x x                                      x x                                   x x
-            x   x                                        x   x                                   x   x              x   x             x   x                                    x   x                                 x   x
-    x       x   x                                        x   x                     x             x   x              x   x             x   x                                    x   x                  x              x   x
-   xxx      x   x                  x          x          x   x          x         xxx            x   x              x   x             x   x           x          x             x   x               xxx x    xx       x   x
-  xx xx     x   x                 xxx        x x         x   x         x x       xx  x      x    x   x              x   x             x   x         xx xx    x x  x   x xx     x   x          x   x    x   x  x      x   x
-xxx   xxx   x   x        x   x   xx xx    xxx  x     x   x   x        x   x   xxxx     xx  xx  x x   x       x  x   x   x         x   x   x        x     xx x x     xx    x    x   x         x x x      xxx    xx    x   x
-─────────x x─────x──────x x x──x──────xxxx──────x───x x x─────x──────x──────x────────────xx x x┼x─────x─────x──x──xx─────x──────xx xxx─────x──────x────────x───────────────xxxx─────x───────x───x────────────────xxxx─────x──
-          x      x     x   x                     x x   x      x     x                        x        x    x             x     x           x     x                                  x     xx                              x
-                 x    x                           x           x    x                                  x    x             x    x            x    x                                   x    x                                x
-                  x   x                                        x   x                                   x   x              x   x             x   x                                    x   x                                 x
-                  x   x                                        x   x                                   x   x              x   x             x   x                                    x   x                                 x
-                  x   x                                        x   x                                   x   x              x   x             x   x                                    x   x                                 x
-                   x x                                          x x                                     x x                x x               x x                                      x x                                   x
-                    x                                            x                                       x                  x                 x                                        x
-                    x                                            x                                       x                  x                 x                                        x", "Atrial Fibrillation"},
-                {@"     x                           x                           x                           x                           x                           x                           x                           x
-     x                           x                           x                           x                           x                           x                           x                           x
-     x                           x                           x                           x                           x                           x                           x                           x
-    x x                         x x                         x x                         x x                         x x                         x x                         x x                         x x
-    x x                         x x                         x x                         x x                         x x                         x x                         x x                         x x
-    x x                         x x                         x x                         x x                         x x                         x x                         x x                         x x
-    x x                         x x                         x x                         x x                         x x                         x x                         x x                         x x
-    x  x      x     x     x     x  x      x     x     x     x  x      x     x     x     x  x      x     x     x     x  x      x     x     x     x  x      x     x     x     x  x      x     x     x     x  x      x     x     x
-    x  x     xxx   xxx   xxx    x  x     xxx   xxx   xxx    x  x     xxx   xxx   xxx    x  x     xxx   xxx   xxx    x  x     xxx   xxx   xxx    x  x     xxx   xxx   xxx    x  x     xxx   xxx   xxx    x  x     xxx   xxx   xxx
-    x  x     x x   x x   x x    x  x     x x   x x   x x    x  x     x x   x x   x x    x  x     x x   x x   x x    x  x     x x   x x   x x    x  x     x x   x x   x x    x  x     x x   x x   x x    x  x     x x   x x   x x
-x───x───x───x───x-x───x-x───x───x───x───x───x-x───x-x───x───x───x───x───x-x───x-x───x───x───x───x───x-x───x-x───x───x───x───x───x-x───x-x───x───x───x───x───x-x───x-x───x───x───x───x───x-x───x-x───x───x───x───x───x-x───x-x───
-x   x   x   x    x     x    x   x   x   x    x     x    x   x   x   x    x     x    x   x   x   x    x     x    x   x   x   x    x     x    x   x   x   x    x     x    x   x   x   x    x     x    x   x   x   x    x     x
-x   x   x   x               x   x   x   x               x   x   x   x               x   x   x   x               x   x   x   x               x   x   x   x               x   x   x   x               x   x   x   x
- x x     x x                 x x     x x                 x x     x x                 x x     x x                 x x     x x                 x x     x x                 x x     x x                 x x     x x
- x x     x x                 x x     x x                 x x     x x                 x x     x x                 x x     x x                 x x     x x                 x x     x x                 x x     x x
- x x     x x                 x x     x x                 x x     x x                 x x     x x                 x x     x x                 x x     x x                 x x     x x                 x x     x x
-  x       x                   x       x                   x       x                   x       x                   x       x                   x       x                   x       x                   x       x
-          x                           x                           x                           x                           x                           x                           x                           x
-          x                           x                           x                           x                           x                           x                           x                           x", "Atrial Flutter" },
-                {@"     xxxx           xxx           xxx           xxx           xxx           xxx           xxx           xxx           xxx           xxx           xxx           xxx           xxx           xxx           xxx           xxx
-    x    x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x
-   x      x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x
-   x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x      x
-   x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x
-   x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x
-   x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x       x     x
-  x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x         x   x
- x           x x           x x           x x           x x           x x           x x           x x           x x           x x           x x           x x           x x           x x           x x           x x
-x─────────────x─────────────x─────────────x─────────────x─────────────x─────────────x─────────────x─────────────x─────────────x─────────────x─────────────x─────────────x─────────────x─────────────x─────────────x──────────", "Ventricular Tachycardia"},
-                {@"             xxx                                             x xx         x x          xxx                                     x                                     xxx            xxx                 xxx
-    x       x    x                  xx                      x    x       x   x        x   x                                   x x                      x           xx   xx         x   x      xx        x xx       xxx
-   x x     x      x                x   x                     x   x      x    x       x     x    xxx                          x   x          xx        x x         x       x       x     x     x xx      x  x      xx x
-  x  x    x         x              x    x        xxx         x   x      x     x      x     x   x   x                         x   x         x  x      x   x       x         x      x     x     x   x     x  x      x  x
-  x  x    x          x      x      x    x      xx   x        x   x      x     x     x      x   x   xx    xxx        xx       x    x       x    x     x   x      x           x     x     x     x   x     x   x     x  x
-  x  x    x          x     x xx    x    x     x      x       x   x      x      x   x       x   x    x   x   xx    xx  x      x     x      x    x     x    x     x           x     x     x     x   x     x   x     x  x     xx
-  x  x   x            x    x   x  x     x    x        x     x     x    x       x   x       x   x    x  x      xxxx     x    x      x      x    x     x    x    x            x     x     x     x    x    x    x    x  x     x
- x   x   x             x  x    x x      x   x          x   x       x   x       x  x        x  x      xx                 xxxx       x     x     x     x    x    x            x    x      xx   x     x    x    x   x   x     x
- x   x   x              xx      x        xxx            xxx         xx          xx          xx                                      x   x      x    x      x   x            x    x       x  x      xxxxx     x   x   x    x
- x    xxxx                                                                                                                           xxx        xxxx        xxx             xx xx         xx                 xxxx     x  xx
-x─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────x───────────────────────────────────────xxx────", "Ventricular Tachycardia"},
-                {@"                                                                                                                                                                                                               x           x
-                                                                         xx         xx       xx         xxx                                                                                         xx         xx        xx x
-                                                                xx     xx  x        x x     x  xx       x  x         xx                                                                            x  x        x x      x
-                                                           x   x  xx  x     x      x  x    x    x       x  x        x  x                                                                     xx    x   x      x   x     x
-                                                          x x  x   x  x     x      x  x    x    x      x    x      x    x                                                                   x x    x   x      x   x    x
-                                      x     x     x       x x  x   x  x     x     x    x   x    x     x     x      x    x        xx         x                                               x x    x   x      x   x    x
-                              xx     x x   x x   x  x    x  x  x   x  x     x     x    x   x    x     x     x      x    x        x x       x x            xx                               x  x     x  x      x    x   x
-                             x   x  x   x x   x  x  x    x  x  x   x  x     x    x    x    x    x     x     x     x     x        x  x      x  x          x  x     xx     x        xx       x   x    x   x    x     x   x
-              x      xxx     x   x  x   x x   x  x  x   x   x  x   x  x     x    x    x    x    x     x     x     x     x        x   x    x     x      x     x   x  x   x x      x  x      x   x    x    x   x     x   x
-      x      x x    x   x   x    x  x   x x   x  x  x   x   x  x   x  x     x   x     x    x    x     x     x     x     x       x    x   x       x    x       x  x  x  x  x     x    x    x    x    x    x   x     x   x
-     x x    x   x  x    x   x    x x   x x    x x    x x    x x    x  x     x   x     x   x     x    x       x    x      x    xx     x  x       x    x        x  x  x  x   x    x    x    x     x   x    x   x     x   x
-    x   x  x    x x      xxx      x     x      x      x      x      xx       x x       x  x     x    x       x   x       x   x      x   x       x    x        x  x  x  x    x   x     x  x      x   x    x  x      xx x
-xxxx     xx      x                                                            x         xx       xxxx         xxx         xxx        xxx         xxxx          xx    xx      xxx       xxx       xx       xx         x
-─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────", "Ventricular Tachycardia"},
-                {@"          x                            x                            x                            x                            x                            x                            x                            x
-         x x                          x x                          x x                          x x                          x x                          x x                          x x                          x x
-         x x                          x x                          x x                          x x                          x x                          x x                          x x                          x x
-         x  x                         x  x                         x  x                         x  x                         x  x                         x  x                         x  x                         x  x
-         x   x                        x   x                        x   x                        x   x                        x   x                        x   x                        x   x                        x   x
-         x   x                        x   x                        x   x                        x   x                        x   x                        x   x                        x   x                        x   x
-         x   x                        x   x                        x   x                        x   x                        x   x                        x   x                        x   x                        x   x
-        x    x          xxx          x    x          xxx          x    x          xxx          x    x          xxx          x    x          xxx          x    x          xxx          x    x          xxx          x    x
-        x     x        x   x         x     x        x   x         x     x        x   x         x     x        x   x         x     x        x   x         x     x        x   x         x     x        x   x         x     x
-xxxxx   x     x       x     xxxxxx   x     x       x     xxxxxx   x     x       x     xxxxxx   x     x       x     xxxxxx   x     x       x     xxxxxx   x     x       x     xxxxxx   x     x       x     xxxxxx   x     x
-─────x──x─────x───────x───────────x──x─────x───────x───────────x──x─────x───────x───────────x──x─────x───────x───────────x──x─────x───────x───────────x──x─────x───────x───────────x──x─────x───────x───────────x──x─────x───
-      x x     x   xx  x            x x     x   xx  x            x x     x   xx  x            x x     x   xx  x            x x     x   xx  x            x x     x   xx  x            x x     x   xx  x            x x     x
-       x       x x x  x             x       x x x  x             x       x x x  x             x       x x x  x             x       x x x  x             x       x x x  x             x       x x x  x             x       x x
-                x   xx                       x   xx                       x   xx                       x   xx                       x   xx                       x   xx                       x   xx                       x", "Junctional Rhythm" },
-                {@"               x                                x                                x               x               x               x               x               x               x               x               x
-               xx                               xx                               x               x               x               x               x               x               x               x               x
-               x x                              x x                              x               x               x               x               x               x               x               x               x
-               x  x                             x  x                            x x             x x             x x             x x             x x             x x             x x             x x             x x
-               x  x                             x  x                            x x             x x             x x             x x             x x             x x             x x             x x             x x
-               x  x                             x  x                            x x             x x             x x             x x             x x             x x             x x             x x             x x
-               x  x         xx                  x  x         xx                 x x             x x             x x             x x             x x             x x             x x             x x             x x
-    xx         x  x        x  x      xx         x  x        x  x     xx         x  x      x     x  x      x     x  x      x     x  x      x     x  x      x     x  x      x     x  x      x     x  x      x     x  x      x
-   x  x        x   x      x    x    x  x        x   x      x    x   x  x        x  x     x x    x  x     x x    x  x     x x    x  x     x x    x  x     x x    x  x     x x    x  x     x x    x  x     x x    x  x     x x
- xx    xxxxx   x   x     x      xxxx    xxxxx   x   x     x      xxx    xxxx    x  x     x x    x  x     x x    x  x     x x    x  x     x x    x  x     x x    x  x     x x    x  x     x x    x  x     x x    x  x     x x
-───────────xx──x───x────x───────────────────xx──x───x────x──────────────────x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x───x
-            x  x   xx  x                     x  x   xx  x                   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x
-            x xx    x xx                     x x     x xx                   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x
-             xx     x x                       xx     x x                     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x
-             x      x x                       x      x x                     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x
-                    xx                               xx                      x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x     x x
-                    xx                               xx                       x       x       x       x       x       x       x       x       x       x       x       x       x       x       x       x       x       x
-                    x                                x                                x               x               x               x               x               x               x               x               x
-                                                                                      x               x               x               x               x               x               x               x               x", "Paroxysmal Supraventricular Tachycardia" },
-                {@"               x                                                                         x                                x                               x                               x
-               xx                              x                                         xx                               xx                              xx                              xx
-               x x                            x x                                        x x                              x x                             x x                             x x
-               x  x                           x x                                        x  x                             x  x                            x  x                            x  x
-               x  x                          x  x                                        x  x                             x  x                            x  x                            x  x
-               x  x                          x  x                                        x  x                             x  x                            x  x                            x  x
-               x  x         xx               x  x                                        x  x         xx                  x  x         xx                 x  x         xx                 x  x         xx
-    xx         x  x        x  x      xx     x    x        xx                  xx         x  x        x  x      xx         x  x        x  x     xx         x  x        x  x     xx         x  x        x  x      xx
-   x  x        x   x      x    x    x  x   x     x       x  xx               x  x        x   x      x    x    x  x        x   x      x    x   x  x        x   x      x    x   x  x        x   x      x    x    x  x
- xx    xxxxx   x   x     x      xxxx    xxx      x      x     xxxxxxxxxxxxxxx    xxxxx   x   x     x      xxxx    xxxxx   x   x     x      xxx    xxxxx   x   x     x      xxx    xxxxx   x   x     x      xxxx    xxxxx
-───────────xx──x───x────x────────────────────────x──────x────────────────────────────xx──x───x────x───────────────────xx──x───x────x──────────────────xx──x───x────x──────────────────xx──x───x────x────────────────────
-            x  x   xx  x                         x      x                             x  x   xx  x                     x  x   xx  x                    x  x   xx  x                    x  x   xx  x
-            x xx    x xx                          x     x                             x x     x xx                     x x     x xx                    x x     x xx                    x x     x xx
-             xx     x x                           x     x                              xx     x x                       xx     x x                      xx     x x                      xx     x x
-             x      x x                            x   x                               x      x x                       x      x x                      x      x x                      x      x x
-                    xx                             x   x                                      xx                               xx                              xx                              xx
-                    xx                             x   x                                      xx                               xx                              xx                              xx
-                    x                              x   x                                      x                                x                               x                               x
-                                                    x xx
-                                                    x x
-                                                     x", "Premature Ventricular Contraction" },
-                {@"               xxx                                        xxx                                        xxx                                        xxx                                         xxx
-              x   x                                      x   x                                      x   x                                      x   x                                       x   x
-              x   x                                      x   x                                      x   x                                      x   x                                       x   x
-             x     x                                    x     x                                    x     x                                    x     x                                     x     x
-             x     x                                    x     x                                    x     x                                    x     x                                     x     x
-            x       x                                  x       x                                  x       x                                  x       x                                   x       x
-            x       x                                  x       x                                  x       x                                  x       x                                   x       x
-            x        x                                 x        x                                 x        x                                 x        x                                  x        x
-           x         x                                x         x                                x         x                                x         x                                 x         x
-xxxxxxxxxxxx         x                 xxxxxxxxxxxxxxxx         x                 xxxxxxxxxxxxxxxx         x                 xxxxxxxxxxxxxxxx         x                 xxxxxxxxxxxxxxxxx         x                 xxxxxxxxx
-──────────────────────x───────────────x──────────────────────────x───────────────x──────────────────────────x───────────────x──────────────────────────x───────────────x───────────────────────────x───────────────x─────────
-                      x             xx                           x             xx                           x             xx                           x             xx                            x             xx
-                       x    xx     x                              x    xx     x                              x    xx     x                              x    xx     x                               x    xx     x
-                        x  x  x   x                                x  x  x   x                                x  x  x   x                                x  x  x   x                                 x  x  x   x
-                         xx    xxx                                  xx    xxx                                  xx    xxx                                  xx    xxx                                   xx    xxx", "Idioventricular Rhythm" },
-                {@"                                   x                                                            x                                                             x                                                            x
-                                   xx                                                           xx                                                            xx                                                           xx
-                                   x x                                                          x x                                                           x x                                                          x
-                                   x  x                                                         x  x                                                          x  x                                                         x
-                                   x  x                                                         x  x                                                          x  x                                                         x
-                                   x  x                                                         x  x                                                          x  x                                                         x
-                                   x  x                                                         x  x                                                          x  x                                                         x
-                                   x  x                                                         x  x                                                          x  x                                                         x
-                                   x   x                                                        x   x                                                         x   x                                                        x
-        xx                         x   x                             xx                         x   x                              xx                         x   x                             xx                         x
-      xx  xx                       x   x                 xx        xx  xx                       x   x                 xx         xx  xx                       x   x                 xx        xx  xx                       x
-     x      x                      x   xx              xx  xx     x      x                      x   xx              xx  xx      x      x                      x   xx              xx  xx     x      x                      x
-xxxxx        xxxxxxxxxxxxxxxxxxxxxxx    x             x      xxxxx        xxxxxxxxxxxxxxxxxxxxxxx    x             x      xxxxxx        xxxxxxxxxxxxxxxxxxxxxxx    x             x      xxxxx        xxxxxxxxxxxxxxxxxxxxxxx
-─────────────────────────────────────────x───────────x────────────────────────────────────────────────x───────────x─────────────────────────────────────────────────x───────────x────────────────────────────────────────────
-                                          xx        x                                                  xx        x                                                   xx        x
-                                            xx    xx                                                     xx    xx                                                      xx    xx
-                                              xxxx                                                         xxxx                                                          xxxx", "First Degree AV Block" },
-                {@"               x                                                 x                                                 x                                                            x
-               xx                                                xx                                                xx                                                           xx
-               x x                                               x x                                               x x                                                          x x
-               x  x                                              x  x                                              x  x                                                         x  x
-               x  x                                              x  x                                              x  x                                                         x  x
-               x  x                                              x  x                                              x  x                                                         x  x
-               x  x         xx                                   x  x         xx                                   x  x         xx                                              x  x         xx
-    xx         x  x        x  x                   xx             x  x        x  x              xx                  x  x        x  x        xx                        xx         x  x        x  x                       xx
-   x  x        x   x      x    x                 x  x            x   x      x    x            x  x                 x   x      x    x      x  x                      x  x        x   x      x    x                     x  x
- xx    xxxxx   x   x     x      xxxxxxxxxxxxxxxxx    xxxxxxxxx   x   x     x      xxxxxxxxxxxx    xxxxxxxxxxxxxx   x   x     x      xxxxxx    xxxxxxxxxxxxxxxxxxxxxx    xxxxx   x   x     x      xxxxxxxxxxxxxxxxxxxxx    xxx
-───────────xx──x───x────x────────────────────────────────────xx──x───x────x────────────────────────────────────xx──x───x────x───────────────────────────────────────────────xx──x───x────x───────────────────────────────────
-            x  x   xx  x                                      x  x   xx  x                                      x  x   xx  x                                                 x  x   xx  x
-            x xx    x xx                                      x xx    x xx                                      x xx    x xx                                                 x xx    x xx
-             xx     x x                                        xx     x x                                        xx     x x                                                   xx     x x
-             x      x x                                        x      x x                                        x      x x                                                   x      x x
-                    xx                                                xx                                                xx                                                           xx
-                    xx                                                xx                                                xx                                                           xx
-                    x                                                 x                                                 x                                                            x", "Second Degree AV Block"},
-                {@"            x                xx                                  x                xx                                                                                        x                xx                  x
-           x x              x  x                                x x              x  x                                                                                      x x              x  x                x x
-    xx     x x            xx    xx                       xx     x x            xx    xx                       xx                       xx                           xx     x x            xx    xx       xx     x x
-   x  x   x   x          x        x                     x  x   x   x          x        x                     x  x                     x  x                         x  x   x   x          x        x     x  x   x   x
-xxx    xxx     x        x          xxxxxxxxxxxxxxxxxxxxx    xxx     x        x          xxxxxxxxxxxxxxxxxxxxx    xxxxxxxxxxxxxxxxxxxxx    xxxxxxxxxxxxxxxxxxxxxxxxx    xxx     x        x          xxxxx    xxx     x
-───────────────x────────x───────────────────────────────────────────x────────x─────────────────────────────────────────────────────────────────────────────────────────────────x────────x───────────────────────────x────────
-               x       x                                            x       x                                                                                                  x       x                            x       x
-                x      x                                             x      x                                                                                                   x      x                             x      x
-                x      x                                             x      x                                                                                                   x      x                             x      x
-                 x    x                                               x    x                                                                                                     x    x                               x    x
-                  x   x                                                x   x                                                                                                      x   x                                x   x
-                   x  x                                                 x  x                                                                                                       x  x                                 x  x
-                    x x                                                  x x                                                                                                        x x                                  x x
-                     x                                                    x                                                                                                          x                                    x", "Second Degree AV Block"},
-                {@"                                                    xxx
-    xx            xx               xx          x   x   x         xx            xx               xx            xx                 xx            xx               xx            xx                 xx            xx
-   x  x          x  x     xx      x  x        x x x     x       x  x          x  x     xx      x  x          x  x            xx x  x          x  x             x  x          x  x   xx          x  x          x  x
-x  x  x        x     x   x  x     x  x        x  x       x      x  x        x     x   x  x     x  x        x     x          x  xx  x        x     x            x  x        x     x x  x         x  x        x     x
- x x  x        x      xxx    xxxx x  x       x           xxxxxx x  x        x      xxx    xxxx x  x        x      xxxxxxxxxxx   x  x        x      xxxxxxxxxxx x  x        x      x    xxxxxxxx x  x        x      xxxxxxxxxx
-──x────x──────x──────────────────x────x──────x─────────────────x────x──────x──────────────────x────x──────x─────────────────────────x──────x──────────────────x────x──────x────────────────────x────x──────x─────────────────
-       x     x                        x     x                       x     x                        x     x                          x     x                        x     x                          x     x
-       x    x                         x    x                        x    x                         x    x                           x    x                         x    x                           x    x
-       x    x                         x    x                        x    x                         x    x                           x    x                         x    x                           x    x
-       x   x                          x   x                         x   x                          x   x                            x   x                          x   x                            x   x
-        x x                            x x                           x x                            x x                              x x                            x x                              x x
-        xx                             xx                            xx                             xx                               xx                             xx                               xx
-        x                              x                             x                              x                                x                              x                                x", "Third Degree AV Block" },
-                {@"
-
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-", "Asystole"},
-                {@"                                                                            xxxxx
-                                                                           xx   xx                                                     xx         x xx
-                   xxxxx                                           xxx     x     x                        xxx             xxxx       x  xx       x   x                                             xxxxx
-                   x   xx                                         x  xx    x     x                       xx xxx          xx  x      x     x    xx    xx                            xx             xx   x
-         xxxxxx    x    x                   xxxxxxxx    xxxx xx  xx   xx   x     xxxxxxxxxx       xxxx   x    xxxxxxx  xx    x    x       x   xx      x    xxxxxxxx    xxxxx  xxx xx x       xxxxxx    xxxxxx         xxxxxxx
-       xxx    xx   x     xx xxxxxxxxxxx   xxx      xx  xx  xx xxx      x  xx              xxxxxxxxx   xx x           xxx     xxxxxx       xxxxx       xxxxxx      xxxxxx   xxxx  xx   xxxxxxxx              xxxxxxxxxxx     x
- xxxxxx        xxxxx      xxx         xxxx          xxxx               xxxx                            xx
-─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-", "Ventricular Fibrillation"},
-                {@"                                                                                                                                                                     xx
-               x    x                                                                                                   x                           xx    xx         x x
-               xx   x                xx                                   x                          xxxx               x x                        x  x  x  x         x xxx            xx         xxx
-              x  x x x              x  x           x    x                xx                   xxx    x  x              x  x                        x   xx   x      xxxx   x           x  x       x   x
-      xx     x    x   x             x   x xx      x x  xx       xxx     x x      x           x   x   x   x xx    xxx  x    x        xx            x         xx    x       x xx       x    x     x    x
-     x  xx  x         x      xx     x    x  x     x x  x x      x xx x x  x     xx           x   x  x     x  x  x   xx     x       x  x          x           x   x        xx x       x    x     x    x    xxx  xxxxx
-    x    x  x         x     x x    x        x    x  x  x xx    xx   x x  x     x  x   x     x    x  x         xx            x     x   x         x            x   x            x     x      x    x    x   x   xx     x
-   x     x x          x     x x   x         x   x   x x   x    x         x    x   x  x x   x     x  x                       x     x    x       x             x   x            x    x        x  x     x   x           xxxxx
-   x     x x          x    x  x   x         x  x    x x   x    x         x   x    x  x x  x      x  x                        x   x     x      x              x   x            x   x          x x      xxx                 x
-  x      x x          x  x    x  x          x x     x x   xx  xx         x xx      xx   xx        xx                          xxxx      x    x               x  xx            xxxx            x                           xxx
- x       xx             x      xx           xx      x       xx            x                                                              xxxx                 xx
-─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────", "Ventricular Fibrillation"}
-            };
+            WaveDictionary Waves = new WaveDictionary();
+            string[] keys = Waves.CSVToBytesToArray();
+            string[] values = Waves.CSVWaveNameToArray();
+            Dictionary<string, string> waves = Waves.CSVToDictionary();
             while (continueQuiz == true)
             {
                 if (!File.Exists(scoreFilePath))
@@ -363,10 +78,8 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                 }
                 Console.Write(myDate.ToLongDateString() + " "); Console.WriteLine(myDate.ToShortTimeString());
                 TitleMenu.WriteLogo();
-                Console.WriteLine($"Hey, {user._firstName}!\n\nWould you like to begin your test? \n\nEnter 1 to begin, enter 2 to see answer key, enter 3 to view past scores, or enter 0 to quit..");
+                Console.WriteLine($"Hey, {user._firstName}!\n\nWould you like to begin your test? \n\nEnter 1 to begin, enter 2 to see answer key, enter 3 to view past scores, or enter 0 to quit.");
                 string? begin = Console.ReadLine();
-
-
                 if (begin == "0")
                 {
                     Environment.Exit(0);
@@ -435,9 +148,9 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                         else if (String.IsNullOrEmpty(userAnswer))
                         {
                             userScores.questionsAnswered.Add("You did not give an answer");
-                            Console.WriteLine("That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nEnter any key to continue or press 2 to to return to the main menu.");
+                            Console.WriteLine("That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nEnter any key to continue or press 0 to return to the main menu.");
                             userScores.CSVTestScore(false);
-                            if (Console.ReadLine() == "2")
+                            if (Console.ReadLine() == "0")
                             {
                                 userScores.CSVTestQuestion(scoreFilePath, false, false);
                                 Console.Clear();
@@ -472,9 +185,9 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                         {
                             userScores.questionsAnswered.Add(userAnswer);
                             Console.WriteLine("Correct!");
-                            Console.WriteLine("Enter any key to continue or press 2 to quit.");
+                            Console.WriteLine("Enter any key to continue or press 0 to quit.");
                             userScores.CSVTestScore(true);
-                            if (Console.ReadLine() == "2")
+                            if (Console.ReadLine() == "0")
                             {
                                 userScores.CSVTestQuestion(scoreFilePath, false, false);
                                 Console.Clear();
@@ -484,9 +197,9 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                         else if (userAnswer.ToUpper() != answer.ToUpper())
                         {
                             userScores.questionsAnswered.Add(userAnswer);
-                            Console.WriteLine("That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nEnter any key to continue or press 2 to to return to the main menu.");
+                            Console.WriteLine("That was not correct. The correct answer was " + waves[questionKey[i]] + "\n\nEnter any key to continue or press 0 to return to the main menu.");
                             userScores.CSVTestScore(false);
-                            if (Console.ReadLine() == "2")
+                            if (Console.ReadLine() == "0")
                             {
                                 userScores.CSVTestQuestion(scoreFilePath, false, false);
                                 Console.Clear();
@@ -496,9 +209,9 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                         else
                         {
                             userScores.questionsAnswered.Add("An error has occured.");
-                            Console.WriteLine("An error as occured. At this time your score will be deducted one point. Enter any key to continue or press 2 to to return to the main menu.");
+                            Console.WriteLine("An error as occured. At this time your score will be deducted one point. Enter any key to continue or press 0 to return to the main menu.");
                             userScores.CSVTestScore(false);
-                            if (Console.ReadLine() == "2")
+                            if (Console.ReadLine() == "0")
                             {
                                 userScores.CSVTestQuestion(scoreFilePath, false, false);
                                 Console.Clear();
@@ -518,7 +231,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                     {
                         Console.SetBufferSize(240, 350);
                     }
-                    Console.WriteLine("Below are the expected answers to the waveforms you will be asked to name during the test.\n\nPlease utilize the scroll bars to the top and right of your window to view the waveforms.\n\n[Warning]: Adjusting the window height or width will distort the images.\nReturning to the title menu will resolve the distortions.\n ");
+                    Console.WriteLine("Below are the expected answers to the waveforms you will be asked to name during the test.\n\nPlease utilize the scroll bars at the bottom and right of your window to view the waveforms.\n\n[Warning]: Adjusting the window height or width will distort the images.\nReturning to the title menu will resolve the distortions.\n ");
                     Console.WriteLine("(Press any key to return to the Title Menu...)\n");
                     foreach (KeyValuePair<string, string> kvp in waves)
                     {
@@ -571,7 +284,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                         bool nullFile = scoreLinq.CSVNullFileChecker(scoreFilePath);
                         if (nullFile == false)
                         {
-                            Console.WriteLine("What would you like to view? Type in the corresponding number for your selection.\n[0] Quit\n[1]Tests and Scores\n[2]Tests and Questions\n[3]Everything Possible");
+                            Console.WriteLine("What would you like to view? Type in the corresponding number for your selection.\n[0]Quit\n[1]Tests and Scores\n[2]Tests and Questions\n[3]Everything Possible");
                         }
                         else if (nullFile == true)
                         {
@@ -607,35 +320,34 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                                         viewScores = false;
                                         break;
                                     case 1:
-                                        viewScores = false;
                                         scoreLinq.AscendingDateLinq(scoreLinq.CSVReadLine(scoreFilePath));
                                         Console.WriteLine("Press any key to return to the main menu...");
                                         Console.ReadKey();
                                         break;
                                     case 2:
-                                        viewScores = false;
                                         scoreLinq.DescendingScoreLinq(scoreLinq.CSVReadLine(scoreFilePath));
                                         Console.WriteLine("Press any key to return to the main menu...");
+                                        Console.ReadKey();
                                         break;
                                     case 3:
-                                        viewScores = false;
                                         scoreLinq.AscendingScoreLinq(scoreLinq.CSVReadLine(scoreFilePath));
                                         Console.WriteLine("Press any key to return to the main menu...");
+                                        Console.ReadKey();
                                         break;
                                     case 4:
-                                        viewScores = false;
                                         scoreLinq.DescendingScoreLinq(scoreLinq.CSVReadLine(scoreFilePath));
                                         Console.WriteLine("Press any key to return to the main menu...");
+                                        Console.ReadKey();
                                         break;
                                     case 5:
-                                        viewScores = false;
                                         scoreLinq.AscendingTimeLinq(scoreLinq.CSVReadLine(scoreFilePath));
                                         Console.WriteLine("Press any key to return to the main menu...");
+                                        Console.ReadKey();
                                         break;
                                     case 6:
-                                        viewScores = false;
                                         scoreLinq.DescendingTimeLinq(scoreLinq.CSVReadLine(scoreFilePath));
                                         Console.WriteLine("Press any key to return to the main menu...");
+                                        Console.ReadKey();
                                         break;
                                     default:
                                         break;
