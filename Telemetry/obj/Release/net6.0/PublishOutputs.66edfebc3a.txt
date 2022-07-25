@@ -1,0 +1,8 @@
+C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\bin\Release\net6.0\publish\Telemetry.exe
+C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\bin\Release\net6.0\publish\UserSaveData.csv
+C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\bin\Release\net6.0\publish\WaveAscii.csv
+C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\bin\Release\net6.0\publish\WaveNames.csv
+C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\bin\Release\net6.0\publish\Telemetry.dll
+C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\bin\Release\net6.0\publish\Telemetry.deps.json
+C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\bin\Release\net6.0\publish\Telemetry.runtimeconfig.json
+C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\bin\Release\net6.0\publish\Telemetry.pdb

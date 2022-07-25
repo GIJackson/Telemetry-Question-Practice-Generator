@@ -8,8 +8,6 @@ namespace Telemetry
 {
     public class TitleMenu
     {
-
-
         public static void WriteLogo()
         {
             string logo = @"                      __      __       .__                                  __                                 
@@ -26,6 +24,7 @@ ___________    .__                         __                  ___________      
              \/          \/      \/     \/             \/                   \/     \/               \//_____/  ";
 
             Console.WriteLine(logo);
+
         }
     }
 }
