@@ -114,7 +114,7 @@ namespace Telemetry
 
                     //List of Keys from waves Dictionary--the ASCII waveforms
                     List<string> randomKey = new(waves.Keys);
-                    Random _random = new Random();
+                    Random _random = new();
 
                     //The above Keys in randomized order
                     IOrderedEnumerable<string> randomKeyIEnumerable = randomKey.OrderBy(item => _random.Next());
@@ -251,6 +251,10 @@ namespace Telemetry
                 {
                     Console.Clear();
                     bool viewScores = false;
+                    if (OperatingSystem.IsWindows())
+                    {
+                        Console.SetBufferSize(240, 350);
+                    }
                     Console.WriteLine($"Hello, {user._firstName}! Would you like to view your past results? (Yes/No)");
                     string? viewScoresBool = Console.ReadLine();
                     while (string.IsNullOrWhiteSpace(viewScoresBool) == true)
@@ -321,32 +325,32 @@ namespace Telemetry
                                         break;
                                     case 1:
                                         scoreLinq.AscendingDateLinq(scoreLinq.CSVReadLine(scoreFilePath));
-                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        Console.WriteLine("Press any key to return to the previous menu...");
                                         Console.ReadKey();
                                         break;
                                     case 2:
-                                        scoreLinq.DescendingScoreLinq(scoreLinq.CSVReadLine(scoreFilePath));
-                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        scoreLinq.DescendingDateLinq(scoreLinq.CSVReadLine(scoreFilePath));
+                                        Console.WriteLine("Press any key to return to the previous menu...");
                                         Console.ReadKey();
                                         break;
                                     case 3:
                                         scoreLinq.AscendingScoreLinq(scoreLinq.CSVReadLine(scoreFilePath));
-                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        Console.WriteLine("Press any key to return to the previous menu...");
                                         Console.ReadKey();
                                         break;
                                     case 4:
                                         scoreLinq.DescendingScoreLinq(scoreLinq.CSVReadLine(scoreFilePath));
-                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        Console.WriteLine("Press any key to return to the previous menu...");
                                         Console.ReadKey();
                                         break;
                                     case 5:
                                         scoreLinq.AscendingTimeLinq(scoreLinq.CSVReadLine(scoreFilePath));
-                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        Console.WriteLine("Press any key to return to the previous menu...");
                                         Console.ReadKey();
                                         break;
                                     case 6:
                                         scoreLinq.DescendingTimeLinq(scoreLinq.CSVReadLine(scoreFilePath));
-                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        Console.WriteLine("Press any key to return to the previous menu...");
                                         Console.ReadKey();
                                         break;
                                     default:
@@ -369,21 +373,21 @@ namespace Telemetry
                                         break;
                                     case 1:
                                         scoreLinq.AscendingScoreWithQuestionsLinq(scoreLinq.CSVReadLine(scoreFilePath));
-                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        Console.WriteLine("Press any key to return to the previous menu...");
                                         Console.ReadKey();
                                         break;
                                     case 2:
                                         scoreLinq.DescendingScoreWithQuestionsLinq(scoreLinq.CSVReadLine(scoreFilePath));
-                                        Console.WriteLine("Press any key to return to the main menu...");
+                                        Console.WriteLine("Press any key to return to the previous menu...");
                                         Console.ReadKey();
                                         break;
                                 }
                                 break;
                             case 3:
-                                Console.WriteLine("Well here you go!\n\nPlease keep in mind this may be long, so utilization of vertical scroll bars may be neccessary.");
+                                Console.WriteLine("Well here you go!\n\nPlease keep in mind this may be long, so utilization of vertical scroll bars may be neccessary.\n");
                                 Thread.Sleep(3000);
                                 scoreLinq.AllOfItLinq(scoreLinq.CSVReadLine(scoreFilePath), user);
-                                Console.WriteLine("Press any key to return to the main menu...");
+                                Console.WriteLine("Press any key to return to the previous menu...");
                                 Console.ReadKey();
                                 break;
                             default:

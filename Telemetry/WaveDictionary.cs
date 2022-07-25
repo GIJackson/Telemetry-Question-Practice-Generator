@@ -13,8 +13,7 @@ namespace Telemetry
         public string[] CSVToBytesToArray()
         {
             string asciiFilePath = Path.Combine(Directory.GetCurrentDirectory(), "WaveAscii.csv");
-            byte[] asciiBytes = File.ReadAllBytes(asciiFilePath);
-            string asciiString = Encoding.Default.GetString(asciiBytes);
+            string asciiString = File.ReadAllText(asciiFilePath);
             WaveAscii = asciiString.Split(',');
             return WaveAscii;
         }

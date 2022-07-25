@@ -19,6 +19,7 @@ namespace Telemetry
                 return true;
             }
             return false;
+
         }
         public List<ViewScores> CSVReadLine(string scoreFilePath)
         {
@@ -39,130 +40,122 @@ namespace Telemetry
                 viewScoresList.Add(new ViewScores(Convert.ToInt32(lineArray[0]), Convert.ToInt32(lineArray[1]),
                                                lineArray[2].Split('.'), lineArray[3].Split('.'), lineArray[4].Split('.'),
                                                Convert.ToBoolean(lineArray[5].ToLower()), Convert.ToInt32(lineArray[6]),
-                                               Convert.ToInt32(lineArray[7]), stringLineArray8, stringLineArray9, lineArray[10]));
+                                               Convert.ToInt32(lineArray[7]), stringLineArray8, stringLineArray9, lineArray[10],lineArray8Date));
             }
             _viewScoresList = viewScoresList;
             return _viewScoresList;
         }
         public void AscendingDateLinq(List<ViewScores> viewScoresList)
         {
-            
-            var ordered = from v in viewScoresList
-                          orderby v.TestID ascending
+            IOrderedEnumerable<ViewScores> ordered = from v in viewScoresList
+                          orderby v.SortableDateTime.TimeOfDay ascending
                           select v;
-
             Console.WriteLine("Test#" + "\t" + "Date      Time" + "\t\t" + "Time Spent" + "\t" + "Score");
             foreach (ViewScores v in ordered)
             {
-
                 if (v.TestCompleted == false)
                 {
-                    Console.WriteLine(v.TestID + "\t" + v.Date + " " + v.Time + "\t" + v.TimeElapsed + "\t\t" + v.Score + "/" + v.TotalQuestions + "\t" + "You did not finish this test.");
+                    Console.WriteLine($"{v.TestID}\t{v.Date}\t{v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou did not finish this test.");
                 }
                 else if (v.TestCompleted == true)
                 {
-                    Console.WriteLine(v.TestID + "\t" + v.Date + " " + v.Time + "\t" + v.TimeElapsed + "\t\t" + v.Score + "/" + v.TotalQuestions + "\t" + "You answered all of the questions.");
+                    Console.WriteLine($"{v.TestID}\t{v.Date}\t{v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou answered all of the questions.");
                 }
             }
         }
         public void DescendingDateLinq(List<ViewScores> viewScoresList)
         {
-            var ordered = from v in viewScoresList
-                          orderby v.TestID descending
+            IOrderedEnumerable<ViewScores> ordered = from v in viewScoresList
+                          orderby v.SortableDateTime.TimeOfDay descending
                           select v;
             Console.WriteLine("Test#" + "\t" + "Date      Time" + "\t\t" + "Time Spent" + "\t" + "Score");
             foreach (ViewScores v in ordered)
             {
-
                 if (v.TestCompleted == false)
                 {
-                    Console.WriteLine(v.TestID + "\t" + v.Date + " " + v.Time + "\t" + v.TimeElapsed + "\t\t" + v.Score + "/" + v.TotalQuestions + "\t" + "You did not finish this test.");
+                    Console.WriteLine($"{v.TestID}\t{v.Date}\t{v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou did not finish this test.");
                 }
                 else if (v.TestCompleted == true)
                 {
-                    Console.WriteLine(v.TestID + "\t" + v.Date + " " + v.Time + "\t" + v.TimeElapsed + "\t\t" + v.Score + "/" + v.TotalQuestions + "\t" + "You answered all of the questions.");
+                    Console.WriteLine($"{v.TestID}\t{v.Date}\t{v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou answered all of the questions.");
                 }
             }
         }
         public void AscendingScoreLinq(List<ViewScores> viewScoresList)
         {
-            var ordered = from v in viewScoresList
+            IOrderedEnumerable<ViewScores> ordered = from v in viewScoresList
                           orderby v.Score ascending
                           select v;
             Console.WriteLine("Test#" + "\t" + "Date      Time" + "\t\t" + "Time Spent" + "\t" + "Score");
             foreach (ViewScores v in ordered)
             {
-
                 if (v.TestCompleted == false)
                 {
-                    Console.WriteLine(v.TestID + "\t" + v.Date + " " + v.Time + "\t" + v.TimeElapsed + "\t\t" + v.Score + "/" + v.TotalQuestions + "\t" + "You did not finish this test.");
+                    Console.WriteLine($"{v.TestID}\t{v.Date}\t{v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou did not finish this test.");
                 }
                 else if (v.TestCompleted == true)
                 {
-                    Console.WriteLine(v.TestID + "\t" + v.Date + " " + v.Time + "\t" + v.TimeElapsed + "\t\t" + v.Score + "/" + v.TotalQuestions + "\t" + "You answered all of the questions.");
+                    Console.WriteLine($"{v.TestID}\t{v.Date}\t{v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou answered all of the questions.");
                 }
             }
         }
         public void DescendingScoreLinq(List<ViewScores> viewScoresList)
         {
-            var ordered = from v in viewScoresList
+            IOrderedEnumerable<ViewScores> ordered = from v in viewScoresList
                           orderby v.Score descending
                           select v;
             Console.WriteLine("Test#" + "\t" + "Date      Time" + "\t\t" + "Time Spent" + "\t" + "Score");
             foreach (ViewScores v in ordered)
             {
-
                 if (v.TestCompleted == false)
                 {
-                    Console.WriteLine(v.TestID + "\t" + v.Date + " " + v.Time + "\t" + v.TimeElapsed + "\t\t" + v.Score + "/" + v.TotalQuestions + "\t" + "You did not finish this test.");
+                    Console.WriteLine($"{v.TestID}\t{v.Date}\t{v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou did not finish this test.");
                 }
                 else if (v.TestCompleted == true)
                 {
-                    Console.WriteLine(v.TestID + "\t" + v.Date + " " + v.Time + "\t" + v.TimeElapsed + "\t\t" + v.Score + "/" + v.TotalQuestions + "\t" + "You answered all of the questions.");
+                    Console.WriteLine($"{v.TestID}\t{v.Date}\t{v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou answered all of the questions.");
                 }
             }
         }
         public void AscendingTimeLinq(List<ViewScores> viewScoresList)
         {
-            var ordered = from v in viewScoresList
+            IOrderedEnumerable<ViewScores> ordered = from v in viewScoresList
                           orderby v.TimeElapsed ascending
                           select v;
             Console.WriteLine("Test#" + "\t" + "Date      Time" + "\t\t" + "Time Spent" + "\t" + "Score");
             foreach (ViewScores v in ordered)
             {
-
                 if (v.TestCompleted == false)
                 {
-                    Console.WriteLine(v.TestID + "\t" + v.Date + " " + v.Time + "\t" + v.TimeElapsed + "\t\t" + v.Score + "/" + v.TotalQuestions + "\t" + "You did not finish this test.");
+                    Console.WriteLine($"{v.TestID}\t{v.Date}\t{v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou did not finish this test.");
                 }
                 else if (v.TestCompleted == true)
                 {
-                    Console.WriteLine(v.TestID + "\t" + v.Date + " " + v.Time + "\t" + v.TimeElapsed + "\t\t" + v.Score + "/" + v.TotalQuestions + "\t" + "You answered all of the questions.");
+                    Console.WriteLine($"{v.TestID}\t{v.Date}\t{v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou answered all of the questions.");
                 }
             }
         }
         public void DescendingTimeLinq(List<ViewScores> viewScoresList)
         {
-            var ordered = from v in viewScoresList
+            IOrderedEnumerable<ViewScores> ordered = from v in viewScoresList
                           orderby v.TimeElapsed descending
                           select v;
             Console.WriteLine("Test#" + "\t" + "Date      Time" + "\t\t" + "Time Spent" + "\t" + "Score");
             foreach (ViewScores v in ordered)
             {
-
                 if (v.TestCompleted == false)
                 {
-                    Console.WriteLine(v.TestID + "\t" + v.Date + " " + v.Time + "\t" + v.TimeElapsed + "\t\t" + v.Score + "/" + v.TotalQuestions + "\t" + "You did not finish this test.");
+                    Console.WriteLine($"{v.TestID}\t{v.Date}\t{v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou did not finish this test.");
                 }
                 else if (v.TestCompleted == true)
                 {
-                    Console.WriteLine(v.TestID + "\t" + v.Date + " " + v.Time + "\t" + v.TimeElapsed + "\t\t" + v.Score + "/" + v.TotalQuestions + "\t" + "You answered all of the questions.");
+                    Console.WriteLine($"{v.TestID}\t{v.Date}\t{v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou answered all of the questions.");
                 }
             }
         }
         public void AscendingScoreWithQuestionsLinq(List<ViewScores> viewScoresList)
         {
-            var ordered = from v in viewScoresList
+            IOrderedEnumerable<ViewScores> ordered = from v in viewScoresList
                           orderby v.Score ascending
                           select v;
             
@@ -180,7 +173,7 @@ namespace Telemetry
         }
         public void DescendingScoreWithQuestionsLinq(List<ViewScores> viewScoresList) 
         {
-            var ordered = from v in viewScoresList
+            IOrderedEnumerable<ViewScores> ordered = from v in viewScoresList
                           orderby v.Score descending
                           select v;
 

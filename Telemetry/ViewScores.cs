@@ -14,7 +14,7 @@ namespace Telemetry
         //and how long they took on the test "0,0,Test Questions,Test Answers, Correct or Incorrect,Test Completed,Score,Total Questions,Date,Time,Time Elapsed"
 
         public ViewScores(int testID, int userID, string[] testQuestions, string[] testAnswers, string[] correctOrIncorrect,
-                            bool testCompleted, int score, int totalQuestions, string date, string time, string timeElapsed )
+                            bool testCompleted, int score, int totalQuestions, string date, string time, string timeElapsed, DateTime sortableDateTime )
         {
             this.TestID = testID;
             this.UserID = userID;
@@ -27,6 +27,7 @@ namespace Telemetry
             this.Date = date;
             this.Time = time;
             this.TimeElapsed = timeElapsed;
+            this.SortableDateTime = sortableDateTime;
         }
         public int TestID { get; set; }
         public int UserID { get; set; }
@@ -39,6 +40,7 @@ namespace Telemetry
         public string Date { get; set; }
         public string Time { get; set; }
         public string TimeElapsed { get; set; }
+        public DateTime SortableDateTime { get; set; }
 
 
     }
