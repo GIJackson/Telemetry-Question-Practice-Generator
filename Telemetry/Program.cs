@@ -11,23 +11,30 @@ namespace Telemetry
     {
         public static void Main()
         {
-            string OS = Environment.OSVersion.ToString();
             User user = new();
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), "UserSaveData.csv");
+
+            //Boolean to call CSVSaveReader method from the User class to
+            //check for a new user, returning user, or for error-handling.
             bool validSave = user.CSVSaveReader(filePath);
+
+            //Neccessary for master loop feature.
             bool continueQuiz = true;
+
+            //Eye candy, totally unnecessary at this time
             string dateTimeNowu = DateTime.Now.ToString("u");
             DateTime myDate = DateTime.Parse(dateTimeNowu);
             Console.Write(myDate.ToLongDateString() + " "); Console.WriteLine(myDate.ToShortTimeString());
             Console.Title = "Telemetry Testing";
-            TitleMenu titleMenu = new();
             TitleMenu.WriteLogo();
+
             if (validSave == false)
             {
                 user.CSVWriterNew(filePath);
             }
             else if (validSave == true)
             {
+                //Presents to the user a list of previous users to choose from.
                 IEnumerable<string> names = user.firstNames.Zip(user.lastNames, (first, second) => first + " " + second);
                 Dictionary<int, string> users = user.userIDs.Zip(names, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
                 Console.WriteLine("Please choose a user by entering the corresponding number, or enter 0 to create a new user:\n");
@@ -64,10 +71,14 @@ namespace Telemetry
                     user.UserProperties(intput);
                 }
             }
+
+            //Created after the user object has the appropriate fields--possibly prone to some nasty errors
             string scoreFilePath = Path.Combine(Directory.GetCurrentDirectory(), $"{user._userID}_{user._firstName}_{user._lastName}.csv");
             Console.Clear();
-            WaveDictionary Waves = new WaveDictionary();
-            string[] keys = Waves.CSVToBytesToArray();
+
+            //Dictionary feature
+            WaveDictionary Waves = new();
+            string[] keys = Waves.CSVWaveFormToArray();
             string[] values = Waves.CSVWaveNameToArray();
             Dictionary<string, string> waves = Waves.CSVToDictionary();
             while (continueQuiz == true)
@@ -79,15 +90,29 @@ namespace Telemetry
                 Console.Write(myDate.ToLongDateString() + " "); Console.WriteLine(myDate.ToShortTimeString());
                 TitleMenu.WriteLogo();
                 Console.WriteLine($"Hey, {user._firstName}!\n\nWould you like to begin your test? \n\nEnter 1 to begin, enter 2 to see answer key, enter 3 to view past scores, or enter 0 to quit.");
+
                 string? begin = Console.ReadLine();
                 if (begin == "0")
                 {
-                    Environment.Exit(0);
+                    Console.WriteLine($"Are you sure you want to quit, {user._firstName}?\nEnter 0 to confirm, or enter any key to return to the main menu.");
+                    string? confirmQuit = Console.ReadLine();
+                    if (Int32.TryParse(confirmQuit, out int quit) == true && quit == 0)
+                    {
+                        Environment.Exit(0);
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
                 else if (begin == "1")
                 {
                     UserScores userScores = new();
+
                     bool newFile = userScores.CSVNewScoreFile(scoreFilePath);
+
+                    //if newFile is true, the testID is 1 as it the user's first test,
+                    //otherwise the testID equals the value found in the TestID method.
                     if (newFile == true)
                     {
                         userScores._testID = 1;
@@ -97,15 +122,22 @@ namespace Telemetry
                         userScores.TestID(scoreFilePath);
                     }
                     Console.Clear();
+
                     Console.WriteLine("For the following questions you will be presented with an image representing a telemetry waveform.\n\nThe images equate to a 10 second history of telemety monitoring.\n\nTo view the image in its entirety you will need to utilize the window scroll bar located at the bottom of the\napplication window.\n");
                     Console.WriteLine("Warning: Adjusting the window height or length will cause the images to distort. Following the prompts\nto restart the test will resolve the distortion.\n");
                     Console.WriteLine("(Press any key to continue...)");
                     Console.ReadKey();
+
+                    //After the user presses a key after reading the instructions, sets the window
+                    //buffer size so ascii images of the questions do not warp due to word wrap. This
+                    //is the reason the program is currently only compatible with windows OS. 
                     if (OperatingSystem.IsWindows())
                     {
                         Console.SetBufferSize(240, 66);
                     }
                     userScores.user_ID = user._userID;
+
+                    //Log feature. Read and writes to a file for important events. See class and method for more information.
                     userScores.CSVTestQuestion(scoreFilePath, true, false);
                     string startDate = DateTime.Now.ToString("u");
                     string startTime = DateTime.Now.ToString("u");
@@ -116,13 +148,16 @@ namespace Telemetry
                     List<string> randomKey = new(waves.Keys);
                     Random _random = new();
 
-                    //The above Keys in randomized order
+                    //The above Keys in randomized order using the random class and linq in method syntax.
                     IOrderedEnumerable<string> randomKeyIEnumerable = randomKey.OrderBy(item => _random.Next());
 
                     //Brought into an array because the above cannot be accessed by index
                     string[] questionKey = randomKeyIEnumerable.ToArray();
                     int totalQuestions = questionKey.Length;
                     userScores._totalQuestions = totalQuestions;
+
+                    //The actual test loop. Could probably more pleasing to the eye if it was a switch case
+                    //TODO: Check if switch case is more pleasing to the eye.
                     for (int i = 0; i < questionKey.Length; i++)
                     {
                         Console.Clear();
@@ -225,8 +260,13 @@ namespace Telemetry
                 }
                 else if (begin == "2")
                 {
+                    //Sets the buffer size to allow vertical and horizontal scrolling so the user can view the dictionary 
+                    //and understand what is expected for the test in terms of questions and the required answers.
                     Console.CursorVisible = false;
                     Console.Clear();
+
+                    //TODO: Find better way to demonstrate information without hard setting the buffer size, as more questions
+                    //are intended to be added.
                     if (OperatingSystem.IsWindows())
                     {
                         Console.SetBufferSize(240, 350);
@@ -251,6 +291,8 @@ namespace Telemetry
                 {
                     Console.Clear();
                     bool viewScores = false;
+                    //TODO: Find better way to demonstrate information without hard setting the buffer size, as more data
+                    //from user scores can get crazy long.
                     if (OperatingSystem.IsWindows())
                     {
                         Console.SetBufferSize(240, 350);
@@ -284,10 +326,15 @@ namespace Telemetry
                     }
                     while (viewScores == true)
                     {
-                        ScoreLinq scoreLinq = new ScoreLinq();
+                        //LINQ query feature to retrieve data from the ViewScores class that reads information from the user scores file
+                        //and presents it according to user choice.
+                        ScoreLinq scoreLinq = new();
                         bool nullFile = scoreLinq.CSVNullFileChecker(scoreFilePath);
+
+                        //TODO: Error-handling
                         if (nullFile == false)
                         {
+                            //Menu for user to select how they would like to view their previous scores.
                             Console.WriteLine("What would you like to view? Type in the corresponding number for your selection.\n[0]Quit\n[1]Tests and Scores\n[2]Tests and Questions\n[3]Everything Possible");
                         }
                         else if (nullFile == true)

@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 
 namespace Telemetry
 {
+    /// <summary>
+    /// Class that is substantiated and given values then added to a list to be sorted through to display to the user their past test scores.
+    /// </summary>
     public class ViewScores
     {
-        //This class would be used to create an object that has the properties of a particular line from userscores, representing
+        //This class is used to create an object that has the properties of a particular line from userscores, representing
         //a list of scores taken by a certain individual at a certain date and time containing information including but not limited to 
         //every question they answered for that particular test, every answer they input in relation to said question, their score and
-        //and how long they took on the test "0,0,Test Questions,Test Answers, Correct or Incorrect,Test Completed,Score,Total Questions,Date,Time,Time Elapsed"
+        //and how long they took on the test.
 
         public ViewScores(int testID, int userID, string[] testQuestions, string[] testAnswers, string[] correctOrIncorrect,
                             bool testCompleted, int score, int totalQuestions, string date, string time, string timeElapsed, DateTime sortableDateTime )

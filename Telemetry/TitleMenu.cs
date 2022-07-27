@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Telemetry
 {
+    /// <summary>
+    /// Pure eye candy at the moment.
+    /// </summary>
     public class TitleMenu
     {
         public static void WriteLogo()

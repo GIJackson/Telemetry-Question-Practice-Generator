@@ -46,3 +46,5 @@ C:\Users\gijca\source\repos\Telemetry-Question-Practice-Generator\Telemetry\obj\
 C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\bin\Debug\net6.0\UserSaveData.csv
 C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\bin\Debug\net6.0\WaveAscii.csv
 C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\bin\Debug\net6.0\WaveNames.csv
+C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\bin\Debug\net6.0\bin\Debug\net6.0\WaveAscii.csv
+C:\Users\Guillermo Jackson\source\repos\Telemetry\Telemetry-Question-Practice-Generator\Telemetry\bin\Debug\net6.0\bin\Debug\net6.0\WaveNames.csv
