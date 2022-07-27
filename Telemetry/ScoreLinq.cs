@@ -60,7 +60,7 @@ namespace Telemetry
         public void AscendingDateLinq(List<ViewScores> viewScoresList)
         {
             IOrderedEnumerable<ViewScores> ordered = from v in viewScoresList
-                          orderby v.SortableDateTime.TimeOfDay ascending
+                          orderby v.SortableDateTime ascending
                           select v;
             Console.WriteLine("Test#" + "\t" + "Date      Time" + "\t\t" + "Time Spent" + "\t" + "Score");
             foreach (ViewScores v in ordered)
@@ -78,7 +78,7 @@ namespace Telemetry
         public void DescendingDateLinq(List<ViewScores> viewScoresList)
         {
             IOrderedEnumerable<ViewScores> ordered = from v in viewScoresList
-                          orderby v.SortableDateTime.TimeOfDay descending
+                          orderby v.SortableDateTime descending
                           select v;
             Console.WriteLine("Test#" + "\t" + "Date      Time" + "\t\t" + "Time Spent" + "\t" + "Score");
             foreach (ViewScores v in ordered)
