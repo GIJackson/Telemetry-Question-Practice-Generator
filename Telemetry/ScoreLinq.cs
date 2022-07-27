@@ -6,11 +6,23 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Globalization;
 
+//Visualize data feature. Kind of a stretch, but I'm reaching for it anyway. The data is only available after the user
+//has taken tests and it's only really displayed in a way to be readable to the user.
+//TODO: Use user scores to make graphs or charts
 namespace Telemetry
 {
+    /// <summary>
+    /// Class that utilizes a list of ViewScores class objects to query values from each object
+    /// utuilizing linq queries.
+    /// </summary>
     public class ScoreLinq
     {
         public List<ViewScores> _viewScoresList = new List<ViewScores>();
+        /// <summary>
+        /// Method to read the user scores at the indicated file path.
+        /// </summary>
+        /// <param name="scoreFilePath">string file path for the current user</param>
+        /// <returns>True if the file contains no information, false if there is one line  more.</returns>
         public bool CSVNullFileChecker(string scoreFilePath)
         {
             string[] nullScoreLines = File.ReadAllLines(scoreFilePath);
@@ -35,7 +47,7 @@ namespace Telemetry
                 DateTime lineArray8Date = DateTime.ParseExact(lineArray[8], "yyyy'-'MM'-'dd HH':'mm':'ss'Z'", null);
                 DateTime lineArray8Time = DateTime.ParseExact(lineArray[8], "yyyy'-'MM'-'dd HH':'mm':'ss'Z'", null);
                 string stringLineArray8 = lineArray8Date.ToString("M/d/yyyy");
-                string stringLineArray9 = lineArray8Time.ToString("hh:mm tt");
+                string stringLineArray9 = lineArray8Time.ToString("h:mm tt");
                 
                 viewScoresList.Add(new ViewScores(Convert.ToInt32(lineArray[0]), Convert.ToInt32(lineArray[1]),
                                                lineArray[2].Split('.'), lineArray[3].Split('.'), lineArray[4].Split('.'),
@@ -55,11 +67,11 @@ namespace Telemetry
             {
                 if (v.TestCompleted == false)
                 {
-                    Console.WriteLine($"{v.TestID}\t{v.Date}\t{v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou did not finish this test.");
+                    Console.WriteLine($"{v.TestID}\t{v.Date} {v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou did not finish this test.");
                 }
                 else if (v.TestCompleted == true)
                 {
-                    Console.WriteLine($"{v.TestID}\t{v.Date}\t{v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou answered all of the questions.");
+                    Console.WriteLine($"{v.TestID}\t{v.Date} {v.Time}\t{v.TimeElapsed}\t{v.Score}/{v.TotalQuestions}\tYou answered all of the questions.");
                 }
             }
         }
@@ -156,8 +168,8 @@ namespace Telemetry
         public void AscendingScoreWithQuestionsLinq(List<ViewScores> viewScoresList)
         {
             IOrderedEnumerable<ViewScores> ordered = from v in viewScoresList
-                          orderby v.Score ascending
-                          select v;
+                                                    orderby v.Score ascending
+                                                    select v;
             
             Console.WriteLine($"{"Test",-10}{"Questions",-40}{"Your Answers"}");
             foreach (ViewScores v in ordered)
@@ -166,7 +178,7 @@ namespace Telemetry
                 for (int i = 0; i < v.TestAnswers.Length; i++)
                 {
                     int testQuestionLength = v.TestQuestions[i].Length;
-                    Console.WriteLine($"{"",-10}{v.TestQuestions[i],-40}\"{v.TestAnswers[i]}\"  {v.CorrectOrIncorrect[i]}.");
+                    Console.WriteLine($"{"",-10}{v.TestQuestions[i],-40}\"{v.TestAnswers[i]}\"{v.CorrectOrIncorrect[i]}");
                 }
                 Console.WriteLine();
             }

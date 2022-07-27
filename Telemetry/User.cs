@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Telemetry
 {
+    /// <summary>
+    /// Object representing the user to reference for the purpose of reading and writing 
+    /// data to related files.
+    /// </summary>
     public class User
     {
         public int _userID;
@@ -13,7 +17,13 @@ namespace Telemetry
         public List<int> userIDs = new();
         public List<string> firstNames = new();
         public List<string> lastNames = new();
-
+        /// <summary>
+        /// Method called if CSVSaveReader returns false. If false because
+        /// the string representing the file path is not found, creates it.
+        /// Otherwise called to create a new user if the user indicates they
+        /// are new.
+        /// </summary>
+        /// <param name="filePath">String representing the file path</param>
         public void CSVWriterNew(string filePath)
         {
             if (!File.Exists(filePath))
@@ -93,12 +103,26 @@ namespace Telemetry
             }
             
         }
+        /// <summary>
+        /// Method called after the user provides and confirms input for their first and last name
+        /// and adds these values to the appropriate fields.
+        /// </summary>
+        /// <param name="newID">int value generated based off how many previous userID values have been created</param>
+        /// <param name="newFirstName">string value representing the user's first name</param>
+        /// <param name="newLastName">string value representing the user's last name</param>
         public void CSVAddNewUserToLists(int newID, string newFirstName, string newLastName)
         {
             userIDs.Add(newID);
             firstNames.Add(newFirstName);
             lastNames.Add(newLastName);
         }
+        /// <summary>
+        /// If the user is a returning user this method uses
+        /// the user input int to select their user from the
+        /// displayed users and applies their fields appropriately.
+        /// </summary>
+        /// <param name="intput">int input from user that correlates to the index of related lists
+        /// to apply appropriate values to the specified fields.</param>
         public void UserProperties(int intput)
         {
             _userID = userIDs[intput];
@@ -106,6 +130,16 @@ namespace Telemetry
             _lastName = lastNames[intput];
             _name = $"{_firstName} {_lastName}";
         }
+
+        /// <summary>
+        /// Reads the indicated .csv at the specified string file path. If file
+        /// does not exist, creates it. If file is in invalid format, deletes
+        /// and creates a new file at indicated file path. Otherwise, adds all previous
+        /// users the User class list fields.
+        /// </summary>
+        /// <param name="filePath">String representing the file path</param>
+        /// <returns>True if valid save, false if new or invalid save</returns>
+        /// 
         public bool CSVSaveReader(string filePath)
         {
             if (!File.Exists(filePath))
